@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<operations xmlns="http://aggateway.org/PAIL/0.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://aggateway.org/PAIL/0.1 ../PAIL%20xml/PAIL_Ops_029.xsd">
-	<irrSetupData>
+<operations 	xmlns="http://aggateway.org/PAIL/0.1"
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://aggateway.org/PAIL/0.1 ../ISO7673-3.xsd">
+   <irrSetupData>
 		<field>
 			<id>
 				<referenceId>6</referenceId>
