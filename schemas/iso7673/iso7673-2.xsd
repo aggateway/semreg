@@ -1,0 +1,1933 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns="http://aggateway.org/PAIL/0.1" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://aggateway.org/PAIL/0.1" elementFormDefault="qualified"
+	attributeFormDefault="unqualified">
+	<!-- Recommendation: Download archive file at https://github.com/AgGateway/PAIL/releases/latest and expand it into your working directory. -->
+	<xs:include schemaLocation="./ISO7673-1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>------------------------ OBSERVATIONS TYPE --------------------</xs:documentation>
+	</xs:annotation>
+	<xs:element name="Observations" type="ObservationsType">
+		<xs:annotation>
+			<xs:documentation>Container for one or more datasets, and/or associated setup and reference data. It is possible to source the observations, the </xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="ObservationsType">
+		<xs:annotation>
+			<xs:documentation>This is the type for the outer-level "wrapper" for everything else. Note how it uses a sequence compositor. The implication of this is that the child elements need to be placed in the order in which they are declared in the type definition in the schema.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence maxOccurs="1">
+			<xs:element name="ReferenceData" type="ReferenceDataType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Element used in documents that contain Reference Data about sensors, loggers, and their manufacturers, as well as observation code definitions.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Setup" type="SetupType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Base tag for a document that contains setup information for a collection of data loggers and  sensors.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ObsDataset" type="ObsDatasetType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>A document that contains ISO 19156 observations (including forecasts and anayses).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="UoMAuthority" type="UnitOfMeasureAuthorityEnum" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>It is important to use a controlled vocabulary for the codes that represent units of measure. However, there currently exist several organizations that maintain such code lists. This attribute lspecifies which organization's codes are being used in the current document. NOTE: A given instance document must use the same set of codes throughout.  </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ContextItem" type="ContextItem" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>List of context items. These allow associating geopolitical-context-specific information to otherwise universal data types..</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>------------------------ REFERENCE DATA-RELATED TYPES --------------------</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="ReferenceDataType">
+		<xs:annotation>
+			<xs:documentation>Type for describing reference data. This includes codes for observed properties and processes, and also data associated with a manufacturer's products.  Includes data loggers, sensors, irrigation systems, and (crop protection or crop nutrition) products.  These are specific to a particular model or equipment ot productm and not a particular instance of a model.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Manufacturer" type="Manufacturer" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Defines a manufacturer that is referenced by LoggerModelReferenceType and SensorModelReferenceType.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SensorModel" type="SensorModelType" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Defines a sensor model that is referenced by Source.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="LoggerModel" type="LoggerModelType" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Defines a data logger model that is referenced by Installation.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ObsCodes" type="ObsCodeListType" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>A collection of ObsCode elements that define observations referenced by setup documents.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ObsCodeDefinitions" type="ObsCodeDefinitionListType" minOccurs="0"
+				maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>A collection of ObsCode definition elements that define observations as stored in infrastructure.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ObsCodeComponents" type="ObsCodeComponentListType" minOccurs="0"
+				maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>A collection of ObsCodeComponent elements that define ObsCodes referenced by setup documents.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ObsCodeComponentDefinitions" type="ObsCodeComponentDefinitionListType"
+				minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>A collection of ObsCodeComponentDefinition elements that define ObsCodes referenced by reference data documents.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ObsEnumItems" type="ObsEnumItemListType" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>A collection of ObsEnumItems.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ObsPartsLists" type="ObsPartsListofListsType" minOccurs="0"
+				maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>A collection of ObsEnumItems.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="GeoPoliticalContexts" type="GeoPoliticalContextListType" minOccurs="0"
+				maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>A collection of ObsEnumItems.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Prefixes" type="PrefixListType" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>A collection of prefixes used to shorten URIs within the document.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>++++++++++++++++++++++++++++++++++++++++++++++++++++++</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="LoggerModelType">
+		<xs:annotation>
+			<xs:documentation>Type used to define unique identifiers for different logger manufacturer/model combinations.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Id" type="CompoundIdentifier"/>
+			<xs:element name="Description" type="xs:string"/>
+			<xs:element name="ManufacturerRef" type="xs:integer">
+				<xs:annotation>
+					<xs:documentation>Reference to the corresponding manufacturer's compound identifier's ReferenceID</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>++++++++++++++++++++++++++++++++++++++++++++++++++++++</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="SensorModelType">
+		<xs:annotation>
+			<xs:documentation>Type used to define unique identifiers for particular model of a sensor.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Id" type="CompoundIdentifier"/>
+			<xs:element name="Description" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Manufacturer-spedified model name of the sensor.Example: "10HS" for a Decagon 10HS sensor, where "Decagon" is the manufacturer name. Should be unique relative to other sensors of the same type from the same manufacturer</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ManufacturerRef" type="xs:integer">
+				<xs:annotation>
+					<xs:documentation>Reference to the corresponding manufacturer's compound identifier's ReferenceID</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="IsVirtual" type="xs:boolean" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>A value of False (or a missing element) denotes a "real" sensor; a value of True denotes a virtual sensor such as an ET calculation, a battery level, etc.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SensorInterface" type="SensorInterfaceEnum" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Does this sensor provide results in digital or analog form?</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="UoM" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Unit of measurement of the sensor. May be overriden operationally by setup data, but is valuable in providing context for resolution and range reference data.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SensorResolution" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Nominal resolution of the sensor independent of any datalogger sampling resolution.  This is specifed as a fraction (or multiple) of the nominal unit of measurement for the sensor.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="UpperRangeOfValidReadings" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The upper (larger value) limit of valid sensor readings.  Values that exceed this limit are considered invalid or erroneous.  Units of measure are identical to the specified units for the   If this element is not specified then validity of values is considered undefined, not unlimited.  For sensor readings that are unlimited the maximum floating point value should be used.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="LowerRangeOfValidReadings" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The lower (smaller value) limit of valid sensor readings.  Values that exceed this limit are considered invalid or erroneous.  Units of measure are identical to the specified units for the sensor.  If this element is not specified then valididty of values is considered undefined, not unlimited.  For sensor readings that are unlimited the minimum floating point value should be used.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="NominalSamplingPeriod" type="xs:duration" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Nominal sampling period (inverse of frequency).  If the sampling rate is determined by the data logger then his should be the upper (most frequent) sampling rate that the sensor can provide.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ManufacturerAdditionalData1" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>String containing any additional data.  Manufacturer is free to include anything that conforms to xs:string formatting constraints.  This is intended to store default information (e.g. a calibration equation) that is not already specified in the schema.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ManufacturerAdditionalData2" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>String containing any additional data.  Manufacturer is free to include anything that conforms to xs:string formatting constraints.  This is intended to store default information (e.g. a calibration equation) that is not already specified in the schema.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ManufacturerAdditionalData3" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>String containing any additional data.  Manufacturer is free to include anything that conforms to xs:string formatting constraints.  This is intended to store default information (e.g. a calibration equation) that is not already specified in the schema.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PowerRequirements" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>String describing the sensor's voltage, current, etc. requirements; eg: "3 VDC @ 12 mA to 15 VDC @ 15 mA".</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Output" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>String describing the characteristics of the sensor's output; e.g. "4-20mA or 300-1250 mV independent of excitation spanning over full scale"</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="OperationalEnvironment" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>String describing the temperature, humidity, etc. range that the sensor can operate within; e.g., "Survival Temperature: -40 - 50°C; Operating Temperature: -10° to +70°C"</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Calibration" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>String describing the type of calibration of the sensor; e.g., Linear, Polynomial, etc."</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SpecificationsURL" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Web reference; e.g., "http://www.abc.com/sensor""</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>++++++++++++++++++++++++++++++++++++++++++++++++++++++</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="ObsCodeComponentListType">
+		<xs:annotation>
+			<xs:documentation>Type consisting of a list of observation and measurement code components (each of which represents an aspect of the meaning of an Obs)</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ObsCodeComponent" type="ObsCodeComponentType" minOccurs="1"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Definition of an aspect of an ISO 19156 observation, such as feature of interest, observed property, procedure, etc. Will be used in a sequence.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ObsCodeComponentType">
+		<xs:sequence>
+			<xs:element name="ComponentCode" type="xs:token" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>A local Id for this component-value combination, assumed to be unique in the .  This identifier is defined by some external entity.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Pid" type="xs:anyURI" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>A persistent and global, fully-qualifed Id for this component-value combination.  This identifier is defined by some external entity.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Description" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>A human-readable description of the code component.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ComponentType" type="xs:token" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>The highest-level code component attribute; specifies which aspect of an observation is being described by the code component. Should come from a controlled vocabulary.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Selector" type="xs:token" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>A item from a controlled vocabulary specific to each component type.  The Selector's value specifies the content or meaning of the ObsCodeComponent. </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Value" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>A numeric value or code list value that specifies the content of the ObsCodeComponent, increases specificity of a particular Selector's value,  or provides value when the ObsComponent is acting as an ISO 19156 parameter.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ValueType" type="ObservationValueTypeEnum" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>A code that specifies whether the data type of the Value attribute.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ValueUoM" type="xs:token" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The units of measure for the Value, if present or when specifying a numeric value of an aggregation temporal or spatial scope.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ObsCodeComponentDefinitionListType">
+		<xs:annotation>
+			<xs:documentation>Type consisting of a list of observation and measurement codes (which encapsulate aspects of the meaning of an Obs)</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ObsCodeComponentDefinition" type="ObsCodeComponentDefinitionType"
+				minOccurs="1" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>List of code component definitions..</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ObsCodeComponentDefinitionType">
+		<xs:sequence>
+			<xs:element name="ComponentCode" type="xs:token" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>A local Id for this component-value combination, assumed to be unique in the .  This identifier is defined by some external entity.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Pid" type="xs:anyURI" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>A persistent and global, fully-qualifed Id for this component-value combination.  This identifier is defined by some external entity, and REQUIRED at the definition level.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Description" type="xs:string" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>A human-readable description of the code component.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Version" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Sequential version number; should increment each time the ENumItem definition is updated..</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ComponentType" type="ObsListItemType" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>The highest-level code component attribute; specifies which aspect of an observation is being described by the code component. Should come from a controlled vocabulary.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Selector" type="ObsListItemType" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>A item from a controlled vocabulary specific to each component type.  The Selector's value specifies the content or meaning of the ObsCodeComponent. </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="EnteredValue" type="xs:token" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>A value, presumed to not come from a known controlled vocabulary, that specifies the content of an ObsCodeComponent, increases specificity of a particular Selector's value,  or provides value when the ObsComponent is acting as an ISO 19156 parameter. This value is mutually exclusive with EnumeratedValue.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="EnumeratedValue" type="ObsListItemType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>A code list value that specifies the content of the ObsCodeComponent, increases specificity of a particular Selector's value,  or provides value when the ObsComponent is acting as an ISO 19156 parameter. This value is mutually exclusive with EnteredValue.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ValueType" type="ObservationValueTypeEnum" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>A code that specifies whether the data type of the Value attribute.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ValueUoM" type="ObsListItemType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The units of measure for the Value, if present or when specifying a numeric value of an aggregation temporal or spatial scope.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Status" type="ObsCodeStatusEnum" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>A code that specifies whether the data type of the Value attribute.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Source" type="SourceType" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Denotes the organization that proposed the ObsCodeComponentDefinition</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Lexicalizations" type="LexicalizationType" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="AllowConversion" type="xs:boolean" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Shows whether non-ValueUoM unit conversions should be allowed.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TimeScope" type="TimeScope" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>A time or time interval budled along with its meaning. Would typically express the range of validity of the setup record.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ObsEnumItemListType">
+		<xs:annotation>
+			<xs:documentation>Type consisting of a list of instances of ObsEnumItemType objects)</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ObsEnumItem" type="ObsEnumItemType" minOccurs="1"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>An enumerated item; part of a controlled vocabulary.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ObsEnumItemType">
+		<xs:sequence>
+			<xs:element name="Code" type="xs:token" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>The short code that will represent the ObsEnumItem in an ObsCodeComponentDefinition, or in code components in an instance document.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Pid" type="xs:anyURI" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>A persistent and global, fully-qualifed Id for this enumerated value.  This identifier is defined by some external entity.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="EnumItemType" type="ObsEnumItemTypeEnum" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Denotes what part of an ObsCodeComponent is described by the ObsEnumItem.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Description" type="xs:string" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>A human-readable description of the enumerated item.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Version" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Sequential version number; should increment each time the EnumItem definition is updated..</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Status" type="ObsCodeStatusEnum" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>A code that specifies whether the data type of the Value attribute.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Source" type="SourceType" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Denotes the organization that proposed the ObsEnumItem.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Lexicalizations" type="LexicalizationType" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Contexts" type="ObsCodeComponentAttributeContextType" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ContextItems" type="ContextItem" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ObsCodeComponentAttributeContextType">
+		<xs:sequence>
+			<xs:element name="ComponentType" type="xs:token" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Specifies the ComponentType value of a context that an ObsEnumItem could be used in.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Selector" type="xs:token" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Specifies the (optional) Selector value of a context that an ObsEnumItem could be used in.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ListDescription" type="xs:string" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ListId" type="xs:token" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ObsCodeListType">
+		<xs:annotation>
+			<xs:documentation>Type consisting of a list of observation and measurement codes (which encapsulate aspects of the meaning of an Obs)</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ObsCode" type="ObsCodeType" minOccurs="1" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Definition of an observed quantity using an ISO 19156-based code structure as defined by an ordered list of ObsCodeComponent elements.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ObsCodeType">
+		<xs:annotation>
+			<xs:documentation>Type representing the meaning of an observation, within an instance document.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Code" type="xs:token">
+				<xs:annotation>
+					<xs:documentation>Locally-scoped unique identifier for this ObsCode. These are the values referenced by Observations/Setup/ObsConfig/ObsCode.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PId" type="xs:anyURI" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>A persitent and global, fully qualifed identifier. This identifier that is defined by some external entity.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Description" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Human-readable description of the observed quantity.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ObsCodeComponentRef" type="xs:token" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>References an individual element of the Obs Code (of type ObsCodeComponentType). Can represent an ISO 19156 feature of interest, observed property, procedure, parameter, etc. This list is typically empty, because the code component structure behind the ObsCode is documented in the ObsCodeDefinitionType. CodeComponents can be specified on the ObsCodeType when there is a desire to add self-contained specificity to an ObsCode.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ObsCodeDefinitionListType">
+		<xs:annotation>
+			<xs:documentation>A list of ObsCodeDefinitions, used in the Reference Data element of an instance document.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ObsCodeDefinition" type="ObsCodeDefinitionType" minOccurs="1"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>An ObsCodeDefinition inserted by value in the Reference Data section of an instance document.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ObsCodeDefinitionType">
+		<xs:annotation>
+			<xs:documentation>Type representing the meaning of an observation, typically as reference data on the cloud, corresponding to an ObsCodeType in an instance document. Instances of this type can be found in documents when there is a desire to make them fully self-contained.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Code" type="xs:token">
+				<xs:annotation>
+					<xs:documentation>Locally-scoped unique identifier for this ObsCode. These are the values referenced by Observations/Setup/ObsConfig/ObsCode.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PId" type="xs:anyURI">
+				<xs:annotation>
+					<xs:documentation>A persitent and global, fully qualifed identifier. This identifier that is defined by some external entity.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Description" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Human-readable description of the observed quantity.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Version" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Sequential version number; should increment each time the ObsCodeDefinitionType instance is updated..</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ObsCodeComponentDefinitionRef" type="xs:token" minOccurs="1"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>References an individual element of the Obs Code (of type ObsCodeComponentDefinitionType). Can represent an ISO 19156 feature of interest, observed property, procedure, parameter, etc. Note that this is not optional, unlike in ObsCodeType.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ObsListItemType">
+		<xs:annotation>
+			<xs:documentation>This type describes the combination on an ObsListItem (by reference) and an (optional) list it forms part of.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="EnumItemRef" type="xs:token">
+				<xs:annotation>
+					<xs:documentation>References an ObsEnumItem</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ObsPartsListRef" type="xs:token" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>References a PartsList the ObsListItem belongs to..</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="GeoPoliticalContextListType">
+		<xs:annotation>
+			<xs:documentation>A list of geopolitical context definitions (e.g., countries, states, etc.)</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="GeoPoliticalContext" type="GeoPoliticalContextType" minOccurs="1"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>The definition of a geopolitical context (e.g., country, state, etc.)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="GeoPoliticalContextType">
+		<xs:annotation>
+			<xs:documentation>Describes a geopolitical context (e.g., country, state, county, etc.)</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="GPCCode" type="xs:token">
+				<xs:annotation>
+					<xs:documentation>The code that will be used to reference the geopolitical context.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Description" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>A human-readable description of the geopolitical context; e.g., "United States", "Kentucky", etc.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="GPCLevel" type="GPCLevelEnum">
+				<xs:annotation>
+					<xs:documentation>Specifies the administrative level of the geopolitical context; e.g., country, state, etc.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="GPCVocSource" type="GPCSourceVocEnum">
+				<xs:annotation>
+					<xs:documentation>Denotes the organization that minted the GPCCode.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Lexicalizations" type="LexicalizationType" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>References a PartsList the ObsListItem belongs to..</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="LexicalizationType">
+		<xs:annotation>
+			<xs:documentation>Describes a combination of a string, a language, and an (optional) geopolitical context in which the string could be used..</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Text" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>The text of the string.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="LanguageCode" type="xs:token">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="GeoPoliticalContextCodes" type="xs:token" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Geopolitical context(s) in which this lexicalization could be used.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ObsPartsListofListsType">
+		<xs:annotation>
+			<xs:documentation>A list of ObsPartsLists. This is a list of vocabularies that can be included in the ReferenceData section of an instance document.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ObsPartsList" type="ObsPartsListType" minOccurs="1"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>A controlled vocabulary.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ObsPartsListType">
+		<xs:annotation>
+			<xs:documentation>A list of ObsParts, which put ObsEnumItems in the context of a list.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Id" type="xs:token">
+				<xs:annotation>
+					<xs:documentation>Identifier for the ObsPartsList</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Description" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Human-friendly description of the string.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Version" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Sequential version number; should increment each time the ENumItem definition is updated..</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ListLevel" type="ObsListLevelEnum">
+				<xs:annotation>
+					<xs:documentation>What kind of data is this list referencing?</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PrefixListType">
+		<xs:annotation>
+			<xs:documentation>List of URI prefixes</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Prefix" type="PrefixType" minOccurs="1" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>A prefix used to shorten URIs.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PrefixType">
+		<xs:annotation>
+			<xs:documentation>A type used to reduce redundancy in the document, by replacing the invariant part shared by a set of URIs with a short key, the prefix.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Alias" type="xs:token">
+				<xs:annotation>
+					<xs:documentation>Identifier used in the instance document URIs to stand for the prefix path. Intended to be very short; e.g., "abc"</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Path" type="xs:token">
+				<xs:annotation>
+					<xs:documentation>The part of a URI that is substituted for the alias; e.g., "https://api.omcodes.org/"..</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>------------------------ OBSERVATION SETUP-RELATED TYPES --------------------</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="SetupType">
+		<xs:annotation>
+			<xs:documentation>Type for describing the setup of a particular site or set of instrumentation.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="DatasetMetadata" type="DatasetMetaDataType" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>List of dataset metadata records.  These follow the definitions from the Dublin Core (dublincore.org/)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ReferenceURL" type="xs:string" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>An optional URL pointing to an XML document containing the set of Reference data  needed to support this Setup element (or a subset thereof, such as the Codes). Links found on child elements should be examined before examining this one.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Grower" type="Grower" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Optional list of growers / business entities.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Farm" type="Farm" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Optional list of farms. Note that farms reference a grower.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Field" type="Field" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Optional list of fields. Note that fields reference a grower, and a farm.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Cropzone" type="Cropzone" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Optional list of cropzones. Note that cropzones reference a field.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="FieldBoundary" type="FieldBoundary" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Optional list of field boundaries. Field boundaries reference fields.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Person" type="Person" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Optional list of persons.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PersonRole" type="PersonRole" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Optional list of person/role combinations. PersonRoles can happen in the context of a specific grower / business.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="LoggerConfig" type="LoggerConfig" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>A device that records sensor readings and may communicate or store those readings.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SensorConfig" type="SensorConfig" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>A particular instance of a sensor, the model of which is defined in reference data.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ObsConfig" type="ObsConfig" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>A sensor put iin the context of a measurement and installation</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Locations" type="Gazetteer" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>A gazetteer: a List of Observation locations (sites) known a priori (e.g., stations and predetermined sampling sites) and used by reference elsewhere.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>++++++++++++++++++++++++++++++++++++++++++++++++++++++</xs:documentation>
+	</xs:annotation>
+	<xs:annotation>
+		<xs:documentation>++++++++++++++++++++++++++++++++++++++++++++++++++++++</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="ObsConfigType">
+		<xs:sequence>
+			<xs:element name="ConfigCode" type="xs:token">
+				<xs:annotation>
+					<xs:documentation>This code can be used in ObsType and ObsCollType records. It's a short ID representing the context/meaning of those values.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Description" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Human readable display name for the Setup.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Comment" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Human readable description of the config record.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TimeScope" type="TimeScope" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>A time or time interval budled along with its meaning. Would typically express the range of validity of the setup record.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ObsCode" type="xs:token">
+				<xs:annotation>
+					<xs:documentation>From reference data: denotes what observed property (e.g.,  air temperature) is being measured / observed.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ObsCodeComponent" type="ObsCodeComponentType" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>When added, either describes the CodeComponents that underlie the ObsCode, or add semantic refinement to the ObsCod. In both cases, the resulting measning should be considered the union of the CodeComponents underlying the ObsCode and these CodeComponents.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SensorRef" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Unique identifier for the sensor (as specified in the SetupDocument tag). Convenient for loggers, where the ObsConfig element can combine an ObsCode with a specific sensor. Note that we use an Integer. Corresponds to ISO 19156 procedure.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="LoggerRef" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Unique identifier for the logger (as specified in the SetupDocument tag). Convenient for loggers, where the ObsConfig element can combine an ObsCode with a specific sensor. Note that we use an Integer. Corresponds to ISO 19156 procedure.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Installation" type="ObsInstallationType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The current installation details for this particular obscode / sensor.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ReferenceURL" type="xs:string" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>An optional URL pointing to an XML document containing the set of Reference data  needed to support this Setup element. A link on this element should be examined before examining the one in its parent element..</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="LoggerConfigType">
+		<xs:annotation>
+			<xs:documentation>Data type used for describing the characteristics of a particular instance of a datalogger.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Id" type="CompoundIdentifier">
+				<xs:annotation>
+					<xs:documentation>Unique identifier for this particular datalogger.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Description" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Display name for the sensor as specified by a user.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Comment" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Human readable textual comment relevant to the Sensor instance</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TimeScope" type="TimeScope" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>A time or time interval budled along with its meaning. Would typically express the range of validity of the setup record.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="LoggerRef" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Reference identifier of the datalogger instance being configured.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="LoggerModelRef" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Reference identifier of the model of  this particular datalogger.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SerialNumber" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The logger / gateway serial number.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CommChannel" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The channel that the datalogger uses for outgoing communication. This is not necessarily the same channel used for sensors.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="FirmwareVersion" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The currently installed firmware.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TelemetryMediumType" type="TelemetryMediumEnumType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Describes the mechanism used to send and receive data to/from the datalogger.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TransmissionOnDemand" type="xs:boolean" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>When present and true, specifies that the datalogger can communicate on demand, irrespective of the specified transmission period..</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="IsFullDuplex" type="xs:boolean" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>When present and true, specifies that the datalogger can communicate in full-duplex mode (i.e., simultaneously send and receive data).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TransmissionPeriod" type="xs:duration" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Periodicity at which measurements are transmitted or stored. Is overriden by TransmissionOnDemand = True</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DaylightSavingsAdjustment" type="xs:boolean" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>When present, specifies that a local adjustment of time is used.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TimeZone" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>When present, the datalogger acts as if it is in the specified time zone irrespective of its actual location (i.e. this is where the datalogger thinks it is).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Installation" type="LoggerInstallationType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Details of the current logger installation.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DefaultSamplingPeriod" type="xs:duration" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The default sampling period for sensors attached to this sensor.  If the Sensor tag does not contain a SamplingPeriod element this the DefaultSamplingPeriod is assumed.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ReferenceURL" type="xs:string" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>An optional URL pointing to an XML document containing the set of Reference data  needed to support this Setup element. A link on this element should be examined before examining the one in its parent element..</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>++++++++++++++++++++++++++++++++++++++++++++++++++++++</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="SensorConfigType">
+		<xs:annotation>
+			<xs:documentation>Data type used for describing the a particular instance of a sensor type.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Id" type="CompoundIdentifier">
+				<xs:annotation>
+					<xs:documentation>ID for this particular instance, distinct from the ID of the SensorModelReferenceType record.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Description" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Display name for the sensor as specified by a user.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Comment" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Human readable textual comment relevant to the Sensor instance</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TimeScope" type="TimeScope" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>A time or time interval budled along with its meaning. Would typically express the range of validity of the setup record.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SensorRef" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Reference identifier of the sensor instance being configured.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SensorModelRef" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Refers to the ID of a SensorModelReferenceType record.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SerialNumber" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Vendor defined serial number.  Not necesarily a number or uniqe across all instances.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="IsIntegratedLogger" type="xs:boolean" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indicates if the datalogger and sensor are an integrated unit.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="FirmwareVersion" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The currently installed firmware version.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DataLinkSpecification" type="DataLinkSpecificationEnum" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Describes the sensor's data link layer.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Installation" type="SensorInstallationType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Details of the current sensor installation.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ReferenceURL" type="xs:string" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>An optional URL pointing to an XML document containing the set of Reference data  needed to support this Setup element. A link on this element should be examined before examining the one in its parent element..</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>++++++++++++++++++++++++++++++++++++++++++++++++++++++</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="LoggerInstallationType">
+		<xs:annotation>
+			<xs:documentation>Data type used for describing the installation of a particular object.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="GrowerRef" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Integer reference to the grower. Corresponds to ISO 19156 feature of interest.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="FarmRef" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Integer reference to the farm. Corresponds to ISO 19156 feature of interest.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="FieldRef" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Integer reference to the field. Corresponds to ISO 19156 feature of interest.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CropzoneRef" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Integer reference to the cropzone. Corresponds to ISO 19156 feature of interest.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="LocationRef" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Integer reference to a location in the gazetteer. Enables specifying the position of the sensor by reference. NOTE: This element and Position are mutually exclusive; if LocationRef is used, Position should not be present, and vice-versa.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Position" type="Position" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Mechanism for specifying the position of the sensor by value. NOTE: This element and LocationRef are mutually exclusive; if Position is used, LocationRef should not be present, and vice-versa.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="HeightDepth" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Hight or depth of the instrument relative to some reference as defined by DisplacementReference. NOTE: Height or depth can also be specified as a parameter of an observation using component codes; which system to use depends on the perspective: installation-centric vs. observation-centric. If both are present, parameters in an observation are assumed correct.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="HeightDepthUoM" type="xs:token" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Unit of measurement used to describe the height / depth of installation of a sensor.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DisplacementReference" type="InstallationDisplacementEnumType"
+				minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The reference point or level from which the HighDepth value is measured.  For example, soil sensor depth relative to the soil surface, or air temperature relative to canopy height</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="InstallationNotes" type="xs:string" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Any pertinent notes about installation.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="InstalledBy" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Meant to represent who performed the installation. Note that it is a string, and not an instance to a Person object.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="InstallationType" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>++++++++++++++++++++++++++++++++++++++++++++++++++++++</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="SensorInstallationType">
+		<xs:annotation>
+			<xs:documentation>Data type used for describing the installation of a particular sensor.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="GrowerRef" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Integer reference to the grower. Corresponds to ISO 19156 feature of interest.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="FarmRef" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Integer reference to the farm. Corresponds to ISO 19156 feature of interest.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="FieldRef" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Integer reference to the field. Corresponds to ISO 19156 feature of interest.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CropzoneRef" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Integer reference to the cropzone. Corresponds to ISO 19156 feature of interest.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="LocationRef" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Integer reference to a location in the gazetteer. Enables specifying the position of the sensor by reference. NOTE: This element and Position are mutually exclusive; if LocationRef is used, Position should not be present, and vice-versa.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Position" type="Position" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Mechanism for specifying the position of the sensor by value. NOTE: This element and LocationRef are mutually exclusive; if Position is used, LocationRef should not be present, and vice-versa.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="HeightDepth" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Hight or depth of the instrument relative to some reference as defined by DisplacementReference. NOTE: Height or depth can also be specified as a parameter of an observation using component codes; which system to use depends on the perspective: installation-centric vs. observation-centric. If both are present, parameters in an observation are assumed correct.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="HeightDepthUoM" type="xs:token" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Unit of measurement used to describe the height / depth of installation of a sensor.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DisplacementReference" type="InstallationDisplacementEnumType"
+				minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The reference point or level from which the HighDepth value is measured.  For example, soil sensor depth relative to the soil surface, or air temperature relative to canopy height</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="LoggerRef" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Integer reference to the data logger a sensor is connected to in the current installation.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Channel" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Channel used to communicate with the datalogger.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="UoM" type="xs:token" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Common Code value from a UnitsOfMeasureReferenceDocument.  Specifies the units of the values that this sensor produces. This is meaningless for a logger.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="InstallationNotes" type="xs:string" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Any pertinent notes about installation.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="InstalledBy" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Meant to represent who performed the installation. Note that it is a string, and not an instance to a Person object.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="InstallationType" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>++++++++++++++++++++++++++++++++++++++++++++++++++++++</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="ObsInstallationType">
+		<xs:annotation>
+			<xs:documentation>Data type used for describing the installation of a particular object.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="GrowerRef" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Integer reference to the grower. Corresponds to ISO 19156 feature of interest.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="FarmRef" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Integer reference to the farm. Corresponds to ISO 19156 feature of interest.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="FieldRef" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Integer reference to the field. Corresponds to ISO 19156 feature of interest.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CropzoneRef" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Integer reference to the cropzone. Corresponds to ISO 19156 feature of interest.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="LocationRef" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Integer reference to a location in the gazetteer. Enables specifying the position of the sensor by reference. NOTE: This element and Position are mutually exclusive; if LocationRef is used, Position should not be present, and vice-versa.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Position" type="Position" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Mechanism for specifying the position of the sensor by value. NOTE: This element and LocationRef are mutually exclusive; if Position is used, LocationRef should not be present, and vice-versa.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="HeightDepth" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Hight or depth of the instrument relative to some reference as defined by DisplacementReference. NOTE: Height or depth can also be specified as a parameter of an observation using component codes; which system to use depends on the perspective: installation-centric vs. observation-centric. If both are present, parameters in an observation are assumed correct.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="HeightDepthUoM" type="xs:token" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Unit of measurement used to describe the height / depth of installation of a sensor.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DisplacementReference" type="InstallationDisplacementEnumType"
+				minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The reference point or level from which the HighDepth value is measured.  For example, soil sensor depth relative to the soil surface, or air temperature relative to canopy height</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SensorRef" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Integer reference to the data logger a sensor is connected to in the current installation.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Channel" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Channel used to communicate with the datalogger.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="UoM" type="xs:token" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Common Code value from a UnitsOfMeasureReferenceDocument.  Specifies the units of the values that this sensor produces. This is meaningless for a logger.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="InstallationNotes" type="xs:string" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Any pertinent notes about installation.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="InstalledBy" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Meant to represent who performed the installation. Note that it is a string, and not an instance to a Person object.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="InstallationType" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>++++++++++++++++++++++++++++++++++++++++++++++++++++++</xs:documentation>
+	</xs:annotation>
+	<xs:annotation>
+		<xs:documentation>++++++++++++++++++++++++++++++++++++++++++++++++++++++</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="DatasetMetaDataType">
+		<xs:sequence>
+			<xs:element name="Id" type="CompoundIdentifier" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Identifier for this metadata record</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DCMetadata" type="DCMetadataArray"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SourceType">
+		<xs:sequence>
+			<xs:element name="Id" type="xs:token">
+				<xs:annotation>
+					<xs:documentation>asdasd</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SourceType" type="IdSourceTypeEnum">
+				<xs:annotation>
+					<xs:documentation>asdasd.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Description" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>asdasd</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>---------------------------------------- OBSERVATIONS DATASET TYPE -------------------------------------------------------</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="ObsDatasetType">
+		<xs:annotation>
+			<xs:documentation>Type for containing data collected by sensors via dataloggers.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="DatasetId" type="CompoundIdentifier" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Optional unique identifier for this particular dataset.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Description" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Human-readable description for this particular dataset.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DatasetMetadataRef" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Optional locally-scoped reference to this particular dataset's metadata record (found in setup data). If metadata is provided, this field must be populated, even if a SetupURL is present. This is because a given Setup record can contain multiple metadata references.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SetupURL" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Universal resource locator for the setup information corresponding to this ObservationsDataset. Not necessary if the Setup data is included along with the dataset.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ObsColl" type="ObsCollType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>A collection of Collections or Observations.  Values specified in the ObsColl apply to all the child ObsColl and Obs elements.  If any of the child elements contain elements that are also present in the parent ObsCollection, then the child's values override the  parent.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Locations" type="Gazetteer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The geographical location of a collection of observations. These are the locations LocRefs point to.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ContextItem" type="ContextItem" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>List of context items. These allow associating geopolitical-context-specific information to otherwise universal data types..</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ObsType" mixed="true">
+		<xs:annotation>
+			<xs:documentation>An ISO 19156 Observation</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ObsId" type="CompoundIdentifier" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Optional unique identifier for this particular observation.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ObsConfigCode" type="xs:token" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Identifies the Source (Sensor-measurement code-installation combination) for this particular ISO 19156 observation. It is optional, to accommodate situations where it is more compact to specify Code and position directly. It is a reference to the ObsConfig element that has the same code.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PhenTime" type="TimeScope" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>ISO 19156 phenomenonTime. Time when the phenomenon took place. Optional because it may be reported higher in the hierarchy. Note that in the case of forecasts this phenomenon time may occur in the future.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ResTime" type="xs:dateTime" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>ISO 19156 resultTme. Time when the result (value) was obtained. Optional because a) it may be reported higher in the hierarchy.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ValidTime" type="TimeScope" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>ISO 19156 validTme. A timescope that expresses the time interval that the result will be vallid for. Useful Time when the result (value) was obtained. Optional because a) it may be reported higher in the hierarchy.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TXStatus" type="TransmitConfirmCodeType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Specific values TBD. 
+	
+	Text that indicates the status of the communication with the sensor when the associated data were transmitted. This is used to indicate if any communication errors occurred that may invalidate the data stream.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="GrowerRef" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Integer reference to the grower. Corresponds to ISO 19156 feature of interest.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="FarmRef" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Integer reference to the farm. Corresponds to ISO 19156 feature of interest.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="FieldRef" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Integer reference to the field. Corresponds to ISO 19156 feature of interest.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CropzoneRef" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Integer reference to the cropzone. Corresponds to ISO 19156 feature of interest.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SensorRef" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Unique identifier for the sensor (as specified in the SetupDocument tag) for highly-variable situations where specifying source is not good enough, e.g., in a moving sensor. Note that we use an Integer. Corresponds to ISO 19156 procedure.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="LocRef" type="xs:integer" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>An integer reference to the geographical location of an observation.Use this if the dataset will reference the same locations multiple times. Do NOT use together with FOIPosition, FOILieString, or FOIMultiPolygon</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="FOIPosition" type="Position" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>The geographical extent of an individual observation, expressed as a Potition. This is only needed when the position can/does change between readings.  Do NOT use together with LocRef, FOILineString, or FOIMultiPolygon.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="FOILineString" type="LineString" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>The geographical extent of an individual observation, expressed as a LineString.  This is only needed when the location can/does change between readings.  Do NOT use together with LocRef, FOIPosition, or FOIMultiPolygon.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="FOIMultiPolygon" type="MultiPolygonSpatialScope" minOccurs="0"
+				maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>The geographical extent of an individual observation, expressed as a MultiPolygon.  This is only needed when the location can/does change between readings.  Do NOT use together with LocRef, FOIPosition, or FOILineString.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="HeightDepth" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Identifies the height (positive) or depth (negative) at which this measurement was taken.  This is only used when the Depth is determined at measurement time (e.g. a portable sensor such as a neutron probe.)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ObsCode" type="xs:token" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Identifies what the ISO 19156 observed property (and possibily the is being observed. Would not usually be used, because the Source referenced by SrcId includes it: </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ObsCodeComponent" type="ObsCodeComponentType" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Code compoonents in case the ObsConfigCode or ObsCode are missing, or the underlying ObsCode is underspecified. Corresponds to ISO 19156 procedure, feature of interest, parameter, and observed property.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Value" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Value for the observation. 20160120: Simon, this is declared as an xs:double for demonstration purposes only; we will accommodate numeric, string, and enumerated representations..</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ContextItem" type="ContextItem" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>List of context items. These allow associating geopolitical-context-specific information to otherwise universal data types..</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ObsCollType">
+		<xs:annotation>
+			<xs:documentation>A mechanism for establishing relationships among ISO 19156 observations, using collections.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ObsCollectionId" type="CompoundIdentifier" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Optional compound identifier for this particular collection.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ObsConfigCode" type="xs:token" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Identifies the Setup (Sensor-measurement code-installation combination) for this particular ISO 19156 observation. It is optional, to accommodate situations where it is more compact to specify Code and position directly.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PhenTime" type="TimeScope" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>ISO 19156 phenomenonTime. Time when the phenomenon took place. Optional because it may be reported higher in the hierarchy. Note that in the case of forecasts this phenomenon time may occur in the future.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ResTime" type="xs:dateTime" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>ISO 19156 resultTme. Time when the result (value) was obtained. Optional because a) it may be reported higher in the hierarchy.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ValidTime" type="TimeScope" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>ISO 19156 validTme. A timescope that expresses the time interval that the result will be vallid for. Useful Time when the result (value) was obtained. Optional because a) it may be reported higher in the hierarchy.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TXStatus" type="TransmitConfirmCode" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Text that indicates the status of the communication with the sensor when the associated data were transmitted. This is used to indicate if any communication errors occurred that may invalidate the data stream.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="GrowerRef" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Integer reference to the grower. Corresponds to ISO 19156 feature of interest.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="FarmRef" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Integer reference to the farm. Corresponds to ISO 19156 feature of interest.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="FieldRef" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Integer reference to the field. Corresponds to ISO 19156 feature of interest.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CropzoneRef" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Integer reference to the cropzone. Corresponds to ISO 19156 feature of interest.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SensorRef" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Unique identifier for the sensor (as specified in the SetupDocument tag) for highly-variable situations where specifying source is not good enough, e.g., in a moving sensor. Note that we use an Integer. Corresponds to ISO 19156 procedure.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="LocRef" type="xs:integer" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>An integer reference to the geographical location of an obbservation.Use this if the dataset will reference the same locations multiple times.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="FOIPosition" type="Position" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>The geographical extent of an individual observation, expressed as a Potition. This is only needed when the position can/does change between readings.  Do NOT use together with LocRef, FOILineString, or FOIMultiPolygon.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="FOILineString" type="LineString" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>The geographical extent of an individual observation, expressed as a LineString.  This is only needed when the location can/does change between readings.  Do NOT use together with LocRef, FOIPosition, or FOIMultiPolygon.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="FOIMultiPolygon" type="MultiPolygonSpatialScope" minOccurs="0"
+				maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>The geographical extent of an individual observation, expressed as a MultiPolygon.  This is only needed when the location can/does change between readings.  Do NOT use together with LocRef, FOIPosition, or FOILineString.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="HeightDepth" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Identifies the height (positive) or depth (negative) at which this measurement was taken.  This is only used when the Depth is determined at measurement time (e.g. a portable sensor such as a neutron probe.)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ObsCode" type="xs:token" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Identifies what the ISO 19156 observed property (and possibily the is being observed. Would not usually be used, because the Source referenced by SrcId includes it: </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ObsCodeComponent" type="ObsCodeComponentType" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Code compoonents in case the ObsConfigCode and ObsCode are missing, or the underlying ObsCode is underspecified. Corresponds to ISO 19156 procedure, feature of interest, parameter, and observed property.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Obs" type="ObsType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>An individual reading from a single source / sensor.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ObsColl" type="ObsCollType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>A nested collection.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ContextItem" type="ContextItem" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>List of context items. These allow associating geopolitical-context-specific information to otherwise universal data types..</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="FOIShapeType">
+		<xs:annotation>
+			<xs:documentation>This type enables describing a spatial scope or feature of interest using a point, LineString, or MultiPolygon. Only ONE of the three elements contained within it should be used in any given instance.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Position" type="Position" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The FOIShape is a Position.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="LineString" type="LineString" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The FOIShape is a LineString.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MultiPolygon" type="MultiPolygonSpatialScope" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The FOIShape is a MultiPolygon.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>-------------------------------------------- UTILITY TYPES -----------------------------------</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType name="TransmitConfirmCodeType">
+		<xs:annotation>
+			<xs:documentation>--Values TBD--  codes used to describe transmission status.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:annotation>
+		<xs:documentation>-------------------------------------------- ENUMERATIONS -----------------------------------</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType name="InstallationDisplacementEnumType">
+		<xs:annotation>
+			<xs:documentation>specifies the reference from which sensor (or logger) displacement is measured.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="MeanSeaLevel">
+				<xs:annotation>
+					<xs:documentation>Height / depth is specified relative to mean seal level.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="SoilSurface">
+				<xs:annotation>
+					<xs:documentation>Height / depth is specified relative to the soil surface.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="CropCanopyTop">
+				<xs:annotation>
+					<xs:documentation>Height / depth is specified relative to the top of the crop canopy.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="Logger">
+				<xs:annotation>
+					<xs:documentation>Height / depth is specified relative to the position of the data logger.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TelemetryMediumEnumType">
+		<xs:annotation>
+			<xs:documentation>Specifies the type of telemetry used by a device to send/receive data.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Radio">
+				<xs:annotation>
+					<xs:documentation>The device uses a radio transmitter to send/receive data.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="Satellite">
+				<xs:annotation>
+					<xs:documentation>The device uses a satellite system to send/receive data.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="Hardwired">
+				<xs:annotation>
+					<xs:documentation>The device uses a physical connection (e.g., current loop, I2C, etc.) to send/receive data.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="CellularRadio">
+				<xs:annotation>
+					<xs:documentation>The device uses cellular telephony to send/receive data.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="LPWAN">
+				<xs:annotation>
+					<xs:documentation>The device uses a low-power wiide-area network to send/receive data.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="Other">
+				<xs:annotation>
+					<xs:documentation>The device uses an option not described above to send/receive data. Do not use this to replace "unknown"; if the telemetry medium is unknown, leave the corresponding data field empty.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ObsCodeStatusEnum">
+		<xs:annotation>
+			<xs:documentation>Specifies the lifecycle status of an ObsCode, ObsCodeComponent, etc.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Active">
+				<xs:annotation>
+					<xs:documentation>The code or code component has Active (usable, "official") status in a public data type registry..</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="Deprecated">
+				<xs:annotation>
+					<xs:documentation>The code or code component is deprecated. Do not use for new observations!</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="Candidate">
+				<xs:annotation>
+					<xs:documentation>The code or code component has candidate status: submitted but not necessarily approved in a public data type registry.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="Proprietary">
+				<xs:annotation>
+					<xs:documentation>The code or code component is proprietary; its definition is unlikely to be available in a public data type registry.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ObservationValueTypeEnum">
+		<xs:annotation>
+			<xs:documentation>Specifies the data type of an ObsCodeComponent value.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ENUM">
+				<xs:annotation>
+					<xs:documentation>The value is a token, and comes from a code list.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="BOOL">
+				<xs:annotation>
+					<xs:documentation>The value should be interpreted as an XML-formatted boolean.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="STRING">
+				<xs:annotation>
+					<xs:documentation>The value is a string.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="DOUBLE">
+				<xs:annotation>
+					<xs:documentation>The value should be interpreted as a floating-point number.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="INTEGER">
+				<xs:annotation>
+					<xs:documentation>The value should be interpreted as an integer.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="DATETIME">
+				<xs:annotation>
+					<xs:documentation>The value should be interpreted as an XML-formatted DateTime</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="COMPLEX"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ObsListLevelEnum">
+		<xs:annotation>
+			<xs:documentation>Describes the content of an ObsPartsList.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ObsCode">
+				<xs:annotation>
+					<xs:documentation>The list contains ObsCodes.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="ObsCodeComponent">
+				<xs:annotation>
+					<xs:documentation>The list contains ObsCodeComponents</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="CodeComponentType">
+				<xs:annotation>
+					<xs:documentation>The list contains CodeComponent.CodeComponentType values..</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="CodeComponentSelector">
+				<xs:annotation>
+					<xs:documentation>The list contains CodeComponent.CodeComponentSelector values.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="CodeComponentValue">
+				<xs:annotation>
+					<xs:documentation>The list contains CodeComponent.CodeComponentValue values..</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="CodeComponentUoM">
+				<xs:annotation>
+					<xs:documentation>The list contains CodeComponent.CodeComponentUoM values.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DataLinkSpecificationEnum">
+		<xs:annotation>
+			<xs:documentation>Describes the data link layer being used by a smart device.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Unspecified">
+				<xs:annotation>
+					<xs:documentation>Data link layer is unspecified.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="I2C">
+				<xs:annotation>
+					<xs:documentation>Data link layer is configured for I2C.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="SDI12">
+				<xs:annotation>
+					<xs:documentation>Data link layer is configured for SDI12</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="SPI">
+				<xs:annotation>
+					<xs:documentation>Data link layer is configured for SPI.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="UART">
+				<xs:annotation>
+					<xs:documentation>Data link layer is configured for UART.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="USB">
+				<xs:annotation>
+					<xs:documentation>Data link layer is configured for USB.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="RS-232C">
+				<xs:annotation>
+					<xs:documentation>Data link layer is configured for RS-232C.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="RS-422">
+				<xs:annotation>
+					<xs:documentation>Data link layer is configured for RS-422.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="RS-485">
+				<xs:annotation>
+					<xs:documentation>Data link layer is configured for RS-485.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="Other">
+				<xs:annotation>
+					<xs:documentation>Data link layer is not covered by previous options.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ObsEnumItemTypeEnum">
+		<xs:annotation>
+			<xs:documentation>Describes what part of a CodeComponent is being described by an ObsEnumItem.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ComponentType">
+				<xs:annotation>
+					<xs:documentation>The ObsEnumItem describes a ComponentType.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="Selector">
+				<xs:annotation>
+					<xs:documentation>The ObsEnumItem describes a Selector.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="Value">
+				<xs:annotation>
+					<xs:documentation>The ObsEnumItem describes an EnumeratedValue..</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="UoM">
+				<xs:annotation>
+					<xs:documentation>The ObsEnumItem describes a unit of measure..</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="GPCSourceVocEnum">
+		<xs:annotation>
+			<xs:documentation>A controlled vocabulary of sources of geopolitical context codes.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ISO3166-1A3">
+				<xs:annotation>
+					<xs:documentation>Indicates the geopolitical context code is a 3-character ISO 3166 code..</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="ISO3166-2">
+				<xs:annotation>
+					<xs:documentation>Indicates the geopolitical context code is a 2-character ISO 3166 code..</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="GeoNames">
+				<xs:annotation>
+					<xs:documentation>Indicates the geopolitical context code was taken from geonames.org..</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="FAOGPO">
+				<xs:annotation>
+					<xs:documentation>INdicates the geopolitical context code was taken from the fAO Geopolitical Ontology.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="GPCLevelEnum">
+		<xs:annotation>
+			<xs:documentation>A controlled vocabulary of sources of geopolitical context codes.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Country">
+				<xs:annotation>
+					<xs:documentation>The geopolitical context is a country.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="ADM1">
+				<xs:annotation>
+					<xs:documentation>The geopolitical context is a first-level administrative subdivision (e.g., state or province).</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="ADM2">
+				<xs:annotation>
+					<xs:documentation>The geopolitical context is a second-level administrative subdivision (e.g., county).</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="SensorInterfaceEnum">
+		<xs:annotation>
+			<xs:documentation>A controlled vocabulary of sensor interface options.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Analog">
+				<xs:annotation>
+					<xs:documentation>The sensor provides analog output.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="Digital">
+				<xs:annotation>
+					<xs:documentation>The geopolitical context is a first-level administrative subdivision (e.g., state or province).</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

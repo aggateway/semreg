@@ -1,0 +1,1136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns="http://aggateway.org/PAIL/0.1" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://aggateway.org/PAIL/0.1" elementFormDefault="qualified"
+	attributeFormDefault="unqualified">
+	<!-- Recommendation: Download archive file at https://github.com/AgGateway/PAIL/releases/latest and expand it into your working directory. -->
+	<xs:annotation>
+		<xs:documentation>------------------------ REFERENCE DATA-RELATED TYPES --------------------</xs:documentation>
+	</xs:annotation>
+	<xs:annotation>
+		<xs:documentation>---------- Reference Data: Manufacturer Type ---------- </xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="Manufacturer">
+		<xs:annotation>
+			<xs:documentation>Describes the manufacturer of a product, machine, sensor, etc.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="id" type="CompoundIdentifier">
+				<xs:annotation>
+					<xs:documentation>Compound identifier for the manufacturer. The manufacturer's GLN can be represented as a ContextItem. </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="description" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Human-readable manufacturer name.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="contextItem" type="ContextItem" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>List of context items. These allow associating geopolitical-context-specific information to otherwise universal data types.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>---------- Reference Data: Product ---------- </xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="Product">
+		<xs:annotation>
+			<xs:documentation>Defines unique identifiers and other intensive properties for a product such as a chemical, a fertilizer, or tank mix. The Component elements describe the participation of optional specific ingredients in the product.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="id" type="CompoundIdentifier">
+				<xs:annotation>
+					<xs:documentation>Compound identifier for the product. Links to specific information about the product can be included via a URI within the CompoundIdentifier.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="manufacturerRef" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Shorthand string id corresponding to the reference identifier of the product manufacturer's CompoundIdentifier Id. </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="description" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Human-readable name for the product.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="type" type="ProductTypeEnum">
+				<xs:annotation>
+					<xs:documentation>An enumerated value describing whether the product is a chemical, a fertilizer, etc. The "Mix" option refers to hybrid products where fertilizers and chemicals are mixed together. Otherwise, a mixture of multiple crop protection products would still be a crop protection product; a mixture of multiple fertilizer products would still be a fertilizer product; a mixture of seed (variety) with either crop protection or fertilizer remains a seed product; a mixture of a generic product with any other type of product would still be a generic product.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="form" type="ProductFormEnum">
+				<xs:annotation>
+					<xs:documentation>Is the product a solid or a liquid? </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="status" type="ProductStatusEnum">
+				<xs:annotation>
+					<xs:documentation>Enumerated value that describes the status / availability of a product. Allows the management of drop-downs and other UI elements: e.g., an Inactive product would not be shown as available for use, but is kept in order to not orphan existing records of that product's usage.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="density" type="NumericValue" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The density of the product; e.g., Value = "1.2" and  UoM = "23" (grams per cubic centimeter)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="isManure" type="xs:boolean" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Set to True if this is a fertilizer product and it is manure.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="isTemporary" type="xs:boolean" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Set to True if this is an ad-hoc product created by the grower.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="totalQuantity" type="NumericValue" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Optional, allows for a mix to be specified in terms of mass or volume contributions. If the total product is specified this way (for example, 300 gallons of mix) and there are two components A and B that participated in the quantity of 30 pounds of A (a solid), and 60 quarts of B (a liquid), the amount of A and B that are applied as the mix, C, is applied by volumer per time, or volume per area, or volume per volume of pivot water, can be easily back-calculated.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="component" type="ProductComponent" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>List of components. Would usually not be present in a chemical product unless it were a mix. Would also not be present in a fertilizer unless the user was keeping track of the analysis / composition</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="contextItem" type="ContextItem" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>List of context items. These allow associating geopolitical-context-specific information to otherwise universal data types..</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ProductComponent">
+		<xs:annotation>
+			<xs:documentation>Define unique identifiers and other intensive properties of a component of a product, typically a fertilizer.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ingredientCode" type="ProductIngredientEnum" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Enumerated code that specifies that the component is; e.g., "N" for nitrogen. Should not be used together with ProductID (they are mutually exclusive.)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="productRef" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Used only when a product is defined in terms of other existing products. It should not be used together with IngredientCode.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="quantity" type="NumericValue">
+				<xs:annotation>
+					<xs:documentation>How does this component participate in the product? Includes a value and its unit of measure (UoM); the UoM is expected to be either a concentration (e.g., UN Rec 20 common code "59" for parts per million) or a quantity added to a tank (e.g., "GLL " for US Gallon, "KGM" for kilogram, etc.) </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="isCarrier" type="xs:boolean">
+				<xs:annotation>
+					<xs:documentation>Is this component the carrier for a mix? Typically IngredientCode would be "Water" if this value is set to True, unless the carrier is a liquid fertilizer.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="contextItem" type="ContextItem" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>List of context items. These allow associating geopolitical-context-specific information to otherwise universal data types..</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>=============== VERY BASIC SUPPORT TYPES ==============</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType name="UUIDCategory">
+		<xs:annotation>
+			<xs:documentation>A universally-unique identifier, such as a Microsoft GUID.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern
+				value="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
+			/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="CompoundIdentifier">
+		<xs:annotation>
+			<xs:documentation>Accommodates the need for unique IDs in the context of keeping datasets of reported data as compact as possible.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="referenceId" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>"shorthand" id to be used in the local scope of the XML file to refer to the object being described.  This value must be unique within the scope of an instance document.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="uniqueId" type="UniqueId" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Collection of unique ids than are associated with the reference id. This system is analogous to the one used in ISO11783 Part 10 Annex E.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="UniqueId">
+		<xs:annotation>
+			<xs:documentation>Defines a unique identifier that will be associated with a locally-scoped string as part of a CompoundIdentifier. Has a source.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="idSource" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Where did this unique id come from? </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="idText" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>A unique identifier. </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="idCategory" type="UniqueIdEnum">
+				<xs:annotation>
+					<xs:documentation>What kind of unique identifier is this? A UUID? A GLN? Proprietary?</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="idSourceCategory" type="IdSourceTypeEnum" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Allows interpretation of what Source means.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Position">
+		<xs:annotation>
+			<xs:documentation>Specifies the geographic coordinates for an object or action. Is assumed to be in geographical coordinates using WGS-84. Meant to be used by value (hence the absence of an Identifier).</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="lat" type="xs:double">
+				<xs:annotation>
+					<xs:documentation>Degrees of latitude in WGS84. Positive north of the equator, negative to the south.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="lon" type="xs:double">
+				<xs:annotation>
+					<xs:documentation>Degrees of longitude in WGS84. Positive east of Greenwich meridian, negative to the west.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="elev" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Assumed to be meters above the WGS84 geoid.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Location">
+		<xs:annotation>
+			<xs:documentation>Specifies a location for an object or action. Is assumed to be in geographical coordinates using WGS-84. Meant to be used by reference (hence the required Identifier.) </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="id" type="CompoundIdentifier" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>This is a compound identifier. Used primarily in observation datasets to provide an efficient way for multiple observations to identify their (common) location.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="externalDocURL" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>A URL for providing (presumed human-readable) external documentation, metadata, etc.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="description" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>This is an optional string name.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="parentRef" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>This is an optional reference to a parent location. This enables describing a hierarchical system of stations, sites/shelters and sampling features.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="class" type="xs:token" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>This is an optional description of what the location means (Station, Site, Shelter, SamplingFeature, Unknown...)
+					.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="lat" type="xs:double">
+				<xs:annotation>
+					<xs:documentation>Degrees of latitude in WGS84. Positive north of the equator, negative to the south.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="lon" type="xs:double">
+				<xs:annotation>
+					<xs:documentation>Degrees of longitude in WGS84. Positive east of Greenwich meridian, negative to the west.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="elev" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Assumed to be meters above the WGS84 geoid.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Gazetteer">
+		<xs:annotation>
+			<xs:documentation>Specifies a list of locations, including geographical position, an identifier, and a description.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="loc" type="Location" minOccurs="1" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>a list of locations, including geographical position, an identifier, and a description..</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="NumericValue">
+		<xs:annotation>
+			<xs:documentation>Encapsulates a number with its corresponding unit of measure.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="value" type="xs:double">
+				<xs:annotation>
+					<xs:documentation>The value; e.g., 7</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="unitOfMeasure" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>The unit of measure code, as specifed by the decalred UoMAuthority</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Note">
+		<xs:annotation>
+			<xs:documentation>Provides a mechanism for tagging a document or setup element with one or more free-form annotations, including who made the annotation, where, and when.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="noteText" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>The free-form text of the note.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="timeStamp" type="xs:dateTime" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>When the note was created.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="location" type="Location" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Location where the note was created, or that the note pertains to.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="personRoleRef" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The id of the creator of the note, and their role.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ContextItem">
+		<xs:annotation>
+			<xs:documentation>Provides a mechanism for representing geopolitical-context-dependent information as a name-value pair along with an optional unit of measure. The unit of measure is assumed to come from the UN Rec 20 list.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="code" type="xs:token">
+				<xs:annotation>
+					<xs:documentation>The code that explains the meaning of the ContextItem. These values are retrieved from an AgGateway SG-managed dictionary.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="value" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The value; e.g., 7</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="unitOfMeasure" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The unit of measure, to be taken from the UN Rec. 20 list of common codes; e.g., "LTR" (liter), "GLL" (US Gallon)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="timeScope" type="TimeScope" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Optional list of TimeScopes. Allows setting a validity range and capturing who (and perhaps where) something was tagged with the ContextItem.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="contextItem" type="ContextItem" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Optional nested ContextItems. A good example is the Public Land Survey System (PLSS) data used for cadastral identification in the US.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>------------------------ TEMPORAL AND SPATIAL SCOPES -------------------</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="TimeScope">
+		<xs:annotation>
+			<xs:documentation>Flexible tool for specifying time, end/start time, etc. Used primarily to specify time intervals</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="contextCategory" type="DateContextEnum">
+				<xs:annotation>
+					<xs:documentation>Enumerated value that describes the meaning of the TimeScope.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="stamp1" type="xs:dateTime" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>This time stamp is optional to accomodate the case where there is a time interval or timing event that does not have a precise date, but does have a time-related meaning; e.g., a crop season. </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="stamp2" type="xs:dateTime" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Optional second time stamp, used to denote a time interval.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="description" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Optional name for the timescope. A typical use would be "2016 Crop Season"</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Grower">
+		<xs:annotation>
+			<xs:documentation>This type represents the grower or business entity that the irrigation system or document is associated with.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="id" type="CompoundIdentifier">
+				<xs:annotation>
+					<xs:documentation>Compound identifier that establishes a shorthand string used to refer to this grower in the scope of the XML file, along with a collection of unique ids that represent the grower in FMIS and other systems.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="description" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Human-readable name of the grower or business entity.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="contextItem" type="ContextItem" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>List of context items. These allow associating geopolitical-context-specific information to otherwise universal data types..</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Farm">
+		<xs:annotation>
+			<xs:documentation>This type represents a farm that the irrigation system or document is associated with. Note that, in turn, the farm is associated with a grower.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="id" type="CompoundIdentifier">
+				<xs:annotation>
+					<xs:documentation>Compound identifier that establishes a shorthand string used to refer to this farm in the scope of the XML file, along with a collection of unique ids that represent the farm in FMIS and other systems.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="description" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Human-readable name of the farm.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="growerRef" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Optional shorthand string id corresponding to the reference identifier of the grower's CompoundIdentifier Id. </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="timeScope" type="TimeScope" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Optional set of timestamps (encapsulated along with their meanings) that can be use to qualify the farm.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="contextItem" type="ContextItem" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>List of context items. These allow associating geopolitical-context-specific information to otherwise universal data types..</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Field">
+		<xs:annotation>
+			<xs:documentation>This type represents a field that the irrigation system or document is associated with. Note that, in turn, the field is associated with a farm.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="id" type="CompoundIdentifier">
+				<xs:annotation>
+					<xs:documentation>Compound identifier that establishes a shorthand string used to refer to this field in the scope of the XML file, along with a collection of unique ids that represent the field in FMIS and other systems.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="description" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Human-readable name of the field.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="growerRef" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Optional shorthand string id corresponding to the reference identifier of the grower's CompoundIdentifier Id. </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="farmRef" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Optional shorthand string id corresponding to the reference identifier of the farm's CompoundIdentifier Id. </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="timeScope" type="TimeScope" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Optional set of timestamps (encapsulated along with their meanings) that can be used to qualify the field.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="area" type="NumericValue" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Surface area of the field, along with the UN Rec 20 unit of measure common code; e.g., "ACR" (acre) or "HAR" (hectare)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="activeBoundaryRef" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>A reference to the FieldBoundary instance that defines the active boundary for this field.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="contextItem" type="ContextItem" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>List of context items. These allow associating geopolitical-context-specific information to otherwise universal data types..</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Cropzone">
+		<xs:annotation>
+			<xs:documentation>This type represents a cropzone (area of a field grown with a given crop over the course of a season) that the irrigation system, document or observation is associated with. Note that, in turn, the cropzone is associated with a field.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="id" type="CompoundIdentifier">
+				<xs:annotation>
+					<xs:documentation>Compound identifier that establishes a shorthand string used to refer to this cropzpne in the scope of the XML file, along with a collection of unique ids that represent the field in FMIS and other systems.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="description" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Human-readable name of the cropzone.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="fieldRef" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Optional shorthand string id corresponding to the reference identifier of the parent field's CompoundIdentifier Id. </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="timeScope" type="TimeScope" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Optional set of timestamps (encapsulated along with their meanings) that can be used to qualify the cropzone.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="area" type="NumericValue" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Surface area of the cropzone, along with the UN Rec 20 unit of measure common code; e.g., "ACR" (acre) or "HAR" (hectare)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="boundingRegion" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The cropzone boundary expressed as a well-known text (WKT) MultiPolygon.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="contextItem" type="ContextItem" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>List of context items. These allow associating geopolitical-context-specific information to otherwise universal data types..</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="FieldBoundary">
+		<xs:annotation>
+			<xs:documentation>This type represents the boundary of a field that the irrigation system or document is associated with.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="id" type="CompoundIdentifier">
+				<xs:annotation>
+					<xs:documentation>Compound identifier that establishes a shorthand string used to refer to this boundary in the scope of the XML file, along with a collection of unique ids that represent the boundary in FMIS and other systems.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="description" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Human-readable name of the field boundary.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="fieldRef" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Optional shorthand string id matching the reference identifier of the corresponding field's CompoundIdentifier Id. </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="timeScope" type="TimeScope" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Optional set of timestamps (encapsulated along with their meanings) that can be used to qualify the field boundary.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="spatialData" type="MultiPolygonSpatialScope" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The multi-polygon representing the field. The data are encoded in OGC's WKT format, and are assumed to be in geographical coordinates, WGS84 datum.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="contextItem" type="ContextItem" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>List of context items. These allow associating geopolitical-context-specific information to otherwise universal data types..</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Person">
+		<xs:annotation>
+			<xs:documentation>This type represents the grower or business entity that the irrigation system or document is associated with.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="id" type="CompoundIdentifier">
+				<xs:annotation>
+					<xs:documentation>Compound identifier that establishes a shorthand string used to refer to this person in the scope of the XML file, along with a collection of unique ids that represent the grower in FMIS and other systems.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="firstName" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>First name of the person; e.g., "James" in "James T Kirk."</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="middleName" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Middle name or initial of the person; e.g., "T" in "James T Kirk.".</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="lastName" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Last name of the person; e.g., "Kirk" in "James T Kirk."</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="combinedName" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Human-readable name of the grower or business entity.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="contextItem" type="ContextItem" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>List of context items. These allow associating geopolitical-context-specific information to otherwise universal data types..</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PersonRole">
+		<xs:annotation>
+			<xs:documentation>This type represents a role carried out by a person.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="id" type="CompoundIdentifier">
+				<xs:annotation>
+					<xs:documentation>Compound identifier that establishes a shorthand string used to refer to this PersonRole in the scope of the XML file, along with an optional collection of unique ids that represent the PersonRole in FMIS and other systems.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="personRef" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Reference identifier of the person in question.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="role" type="PersonRoleEnum">
+				<xs:annotation>
+					<xs:documentation>Role being carried out by the person referenced above.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="growerRef" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Optional reference to the grower / business entity that this PersonRole pertains to. Accomodates the use case in which a person is a crop advisor for one grower and an operator for another.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>--------------------------- Temporal and Spatial Scopes -------------------</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="SpatialScope">
+		<xs:annotation>
+			<xs:documentation>Mechanism for specifying the coverage of an irrigation operation. When dealing with a radial section, such as a section of a pivot span, it is most convenient to use the RadialScope; use MultiPolygonScope otherwise.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="radialScope" type="RadialSpatialScope" minOccurs="0"
+				maxOccurs="unbounded"/>
+			<xs:element name="multiPolygonScope" type="MultiPolygonSpatialScope" minOccurs="0"
+				maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="RadialSpatialScope">
+		<xs:annotation>
+			<xs:documentation>Specifies a start angle and end angle to describe the movement of a pivot or sections therefrom. the angle is specified with increasing degress in the clockwise direction.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="startDeg" type="xs:double">
+				<xs:annotation>
+					<xs:documentation>Start angle, in degrees.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="endDeg" type="xs:double">
+				<xs:annotation>
+					<xs:documentation>End angle, in degrees.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="MultiPolygonSpatialScope">
+		<xs:annotation>
+			<xs:documentation>This is a multi polygon expressed in OGC's WKT format</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="shape" type="xs:string" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>A string encoding a muti-polygon in OGC's WKT format.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="LineString">
+		<xs:annotation>
+			<xs:documentation>This is a multi-segment line expressed in OGC's WKT format</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="shape" type="xs:string" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>A string encoding a linestring in OGC's WKT format.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>-------------------------------------------- ENUMERATIONS -----------------------------------</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType name="ProductTypeEnum">
+		<xs:annotation>
+			<xs:documentation>Describes the type of product. The "Mix" option refers to hybrid products where fertilizers and chemicals are mixed together. Otherwise, a mixture of multiple crop protection products would still be a crop protection product; a mixture of multiple fertilizer products would still be a fertilizer product; a mixture of seed (variety) with either crop protection or fertilizer remains a seed product; a mixture of a generic product with any other type of product would still be a generic product.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="GENERIC"/>
+			<xs:enumeration value="CROP_PROTECTION"/>
+			<xs:enumeration value="CROP_NUTRITION"/>
+			<xs:enumeration value="CROP_VARIETY"/>
+			<xs:enumeration value="MIX"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ProductFormEnum">
+		<xs:annotation>
+			<xs:documentation>Describes the makeup or state of the product at its usage temperature. Enables calculation of concentration or usage by mass of liquid products through the use of a specified density.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="SOLID"/>
+			<xs:enumeration value="LIQUID"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ProductStatusEnum">
+		<xs:annotation>
+			<xs:documentation>Describes the status / availability of a product. Allows the management of drop-downs and other UI elements: e.g., an Inactive product would not be shown as available for use, but is kept in order to not orphan existing records of that product's usage.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ACTIVE"/>
+			<xs:enumeration value="INACTIVE"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ProductIngredientEnum">
+		<xs:annotation>
+			<xs:documentation>Describes possible product ingredients that users may want to explicitly keep track of (mediated, for example, by a manure analysis.)</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="N"/>
+			<xs:enumeration value="P"/>
+			<xs:enumeration value="P2O5"/>
+			<xs:enumeration value="K"/>
+			<xs:enumeration value="K2O"/>
+			<xs:enumeration value="CA"/>
+			<xs:enumeration value="MG"/>
+			<xs:enumeration value="S"/>
+			<xs:enumeration value="B"/>
+			<xs:enumeration value="CL"/>
+			<xs:enumeration value="FE"/>
+			<xs:enumeration value="MN"/>
+			<xs:enumeration value="MO"/>
+			<xs:enumeration value="ZN"/>
+			<xs:enumeration value="FULVIC_ACID"/>
+			<xs:enumeration value="HUMIC_ACID"/>
+			<xs:enumeration value="WATER"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="UniqueIdEnum">
+		<xs:annotation>
+			<xs:documentation>The different kinds of unique Ids that may be associated with an object.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="UUID"/>
+			<xs:enumeration value="GLN"/>
+			<xs:enumeration value="URI"/>
+			<xs:enumeration value="STRING"/>
+			<xs:enumeration value="LONG"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="IdSourceTypeEnum">
+		<xs:annotation>
+			<xs:documentation>The different kinds of Ids that may be used to identify the source of a compound identifier.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="GLN">
+				<xs:annotation>
+					<xs:documentation>A Global Location Number. Assumed to refer to the organization that minted the identifier.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="URI">
+				<xs:annotation>
+					<xs:documentation>A Uniform Resource Identifier, assumed to point to the organization that minted the identifier.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="SetupDataPedigreeEnum">
+		<xs:annotation>
+			<xs:documentation>The setup data for an irrigation system may change over time. Different data providers manage this change in different ways; this enumeration lists the different possible strategies. Users will need to act accordingly, as the accuracy of historical records in the context of a LatestOnly strategy, for example, would suffer unless the user were keeping copies of successive versions of the setup data.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="LATEST_ONLY">
+				<xs:annotation>
+					<xs:documentation>Indicates a situation where the data provider only keeps the most recent system setup record. In these situations, it is incumbent upon the user to access and store the latest setup data frequently, so as to not introduce uncertainty regarding what version of the setup data record corresponds to any given downloaded historical record.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="MATCHED_BY_TIME_INTERVAL">
+				<xs:annotation>
+					<xs:documentation>Indicates a situation where the data provider keeps a time series of setup records, with timestamps such that data records can subsequently be sourced referencing the corresponding setup record. This eliminates the possibility of error whereby a user also cites a data record with the incorrect setup record.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="UNKNOWN">
+				<xs:annotation>
+					<xs:documentation>Indicates a situation where the data provider's strategy regarding versioning of system setup records is unclear, unknown, or unspecified. In these situations, users should act, as in the case of LatestOnly; i.e., access and store the latest setup data frequently, so as to not introduce uncertainty regarding what version of the setup data record corresponds to any given downloaded historical record.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="PositionDataSourceEnum">
+		<xs:annotation>
+			<xs:documentation>Provides information about the origin and accuracy of geographical location and angular position information.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="SINGLE_GNSS_WAAS">
+				<xs:annotation>
+					<xs:documentation>Single-GPS, with WAAS (Wide-Area Augmentation System) corrections.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="SINGLE_GNSS_BASIC_FIX">
+				<xs:annotation>
+					<xs:documentation>Single GPS unit, with no differential or WAAS corrections.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="DIFFERENTIAL_GNSS">
+				<xs:annotation>
+					<xs:documentation>Geographic position data is being derived from a set of two GPS units: one mobile, and one fixed.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="MECHANICAL">
+				<xs:annotation>
+					<xs:documentation>Position data emerges from a mechanical sensor of some form; for example, an optical encoder in the case of a center-pivot irrigation system. These systems are susceptible to biases emerging from an incorrect reference (i.e. zero, or north) position; users are encouraged to calibrate accordingly.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="DESKTOP_GENERATED_DATA">
+				<xs:annotation>
+					<xs:documentation>Geographic position coordinates were explicitly entered, typically following data processing.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="MANUAL_INPUT">
+				<xs:annotation>
+					<xs:documentation>Geographic position data was explicitly entered by a user in the form of numeric coordinates.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="DRAWN">
+				<xs:annotation>
+					<xs:documentation>Geographic position data was drawn on a geographical information system - enabled platform, such as a farm management information system, or other mapping software.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="OTHER">
+				<xs:annotation>
+					<xs:documentation>The source of geographic position data is known, but does not conform to one of the options specified above. Users are encouraged to contact the system manufacturer or installer for details.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="UNKNOWN">
+				<xs:annotation>
+					<xs:documentation>The source of geographic position data is unclear, unknown, or unspecified.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TimeDataSourceEnum">
+		<xs:annotation>
+			<xs:documentation>Different telemetry systems use different strategies for assigning timestamps to events. This enumeration lists them, and enables the user to interpret the timing of received data.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="GNSS_ON_EVENT">
+				<xs:annotation>
+					<xs:documentation>The system tags the event with a GNSS-mediated timestamp corresponding to the moment when the event happened. This is deemed the most accurate approach.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="DEVICE_CLOCK_ON_EVENT">
+				<xs:annotation>
+					<xs:documentation>The system tags the event with an internal device clock-mediated timestamp corresponding to the moment when the event happened. Unless the device clock is synchronized via GPS or a timeserver, there may be drift, and timestamps may have systematic error. Durations are expected to be accurate, however.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="SERVER_CLOCK_ON_TRASNMISSION">
+				<xs:annotation>
+					<xs:documentation>The event is tagged with a timestamp corresponding to when the event was successfully communicated to a server, which is not necessarily the same as when the event occurred. These time sources are susceptible to error in the presence of communication errors in the field.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="DEVICE_CLOCK_ON_TRANSMISSION">
+				<xs:annotation>
+					<xs:documentation>The event is tagged with an internal device clock-mediated  timestamp corresponding to when the event was successfully communicated to a server, which is not necessarily the same as when the event occurred. These time sources are susceptible to error in the presence of communication errors in the field, as well as susceptible to clock drift.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="MANUAL_INPUT"/>
+			<xs:enumeration value="UNKNOWN">
+				<xs:annotation>
+					<xs:documentation>The origin of the timestamp data used to tag events in the system is unknown.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DateContextEnum">
+		<xs:annotation>
+			<xs:documentation>Describes the meaning of an associated timestamp.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CROP_SEASON">
+				<xs:annotation>
+					<xs:documentation>A time interval, that represents a crop season. This is very useful in farm management information systems, because records tagged with a crop season can be easily allocated to the corresponding season for the purposes of calculating costs, etc. The crop season may or may not have actual timestamp information.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="TIMING_EVENT">
+				<xs:annotation>
+					<xs:documentation>A time interval (whoch may or may not contain actual timestamp information) representing an operational phase or process during a crop season. For example, Pre-planting, Harvest, etc.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="VALIDITY">
+				<xs:annotation>
+					<xs:documentation>A time interval, used to specify the time interval during which a document such as a Recommendation is valid.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="PROPOSED">
+				<xs:annotation>
+					<xs:documentation>A time stamp, used to specify the date/time for a field operation (or part thereof) as proposed in a Recommendation.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="REQUESTED">
+				<xs:annotation>
+					<xs:documentation>A time stamp, used to specify the date/time for a field operation (or part thereof) as requested in a Work Order.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="ACTUAL">
+				<xs:annotation>
+					<xs:documentation>A time stamp, used to specify the date/time in which a field operation (or part thereof) actually happened, as represented in a Work Record.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="PROPOSED_START">
+				<xs:annotation>
+					<xs:documentation>A time stamp, used to specify the date/time for the start of a field operation (or part thereof) as proposed in a Recommendation.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="PROPOSED_END">
+				<xs:annotation>
+					<xs:documentation>A time stamp, used to specify the date/time for the end of a field operation (or part thereof) as proposed in a Recommendation.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="EXPIRATION">
+				<xs:annotation>
+					<xs:documentation>A time stamp, used to specify the date/time after which a work order for a field operation will no longer be valid (i.e., will expire).</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="REQUESTED_START">
+				<xs:annotation>
+					<xs:documentation>A time stamp, used to specify the date/time for the start of a field operation (or part thereof) as requested in a Recommendation.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="REQUESTED_END">
+				<xs:annotation>
+					<xs:documentation>A time stamp, used to specify the date/time for the end of a field operation (or part thereof) as requested in a Work Order.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="APPROVAL">
+				<xs:annotation>
+					<xs:documentation>A time stamp, used to specify the date/time in which a Work Order is approved.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="ACTUAL_START">
+				<xs:annotation>
+					<xs:documentation>A time stamp, used to specify the starting date/time in which a field operation (or part thereof) actually happened, as represented in a Work Record</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="ACTUAL_END">
+				<xs:annotation>
+					<xs:documentation>A time stamp, used to specify the ending date/time in which a field operation (or part thereof) actually happened, as represented in a Work Record</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="INSTALLATION">
+				<xs:annotation>
+					<xs:documentation>A time stamp, used to specify the date/time in which a piece of equipment was installed.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="MAINTENANCE">
+				<xs:annotation>
+					<xs:documentation>A time stamp, used to specify the date/time in which maintenance was performed on a piece of equipment.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="UNSPECIFIED">
+				<xs:annotation>
+					<xs:documentation>A time stamp with an unspecified meaning.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="CREATION">
+				<xs:annotation>
+					<xs:documentation>A time stamp, used to specify the date/time in which a document (or part thereof) was created.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="MODIFICATION">
+				<xs:annotation>
+					<xs:documentation>A time stamp, used to specify the date/time in which a document (or part thereof) was modified.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="PersonRoleEnum">
+		<xs:annotation>
+			<xs:documentation>Describes possible roles a person may have.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="GROWER">
+				<xs:annotation>
+					<xs:documentation>The person or organization that is responsible for growing a crop.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="MARKET_PROVIDER">
+				<xs:annotation>
+					<xs:documentation>A person or organization that can influenmce or create markets for a commodity (e.g., a wheat flour producers' association).</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="CUSTOMER">
+				<xs:annotation>
+					<xs:documentation>A person or company that purchases goods (e.g., an agricultural commodity) or services from another person or company. </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="OPERATOR">
+				<xs:annotation>
+					<xs:documentation>A person or organization that is responsible for performing a given field operation (e.g., operating a combine harvester). </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="OWNER">
+				<xs:annotation>
+					<xs:documentation>A person or organization that owns (i.e., legally holds) the farm, field or cropzone on which a crop is being grown. </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="FARM_MANAGER">
+				<xs:annotation>
+					<xs:documentation>A person or organization responsible for making management decisions regaqrding the growing of a crop on a piece of land.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="MARKET_ADVISOR">
+				<xs:annotation>
+					<xs:documentation>A person or organization that provides advice to a grower regarding conditions of the market, typically for a harvested commodity</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="END_USER">
+				<xs:annotation>
+					<xs:documentation>A person or organization that will be consuming a harvested commodity, or a product thereof.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="FINANCIER">
+				<xs:annotation>
+					<xs:documentation>A person or organization that provides capital / funding associated with the production of a crop.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="INSURANCE_AGENT">
+				<xs:annotation>
+					<xs:documentation>A person or organization that provides risk management, e.g., insurance services associated with the production of a crop. </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="GOVERNMENTAL_AGENCY">
+				<xs:annotation>
+					<xs:documentation>An agency of local, state/provincial, or national government, typically considered in a regulatoiry role.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="STATIONARY_ASSET_SUPPLIER">
+				<xs:annotation>
+					<xs:documentation>A person or organization that supplies or maintains stationary assets (e.g., grain bins, scales, stationary irrigation systems) used in crop production.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="MOBILE_ASSET_SUPPLIER">
+				<xs:annotation>
+					<xs:documentation>A person or organization that supplies or maintains mobile assets (e.g., tractors, sprayers, mobile irrigation systems) or stationary assets (e.g., grain bins, scales, stationary irrigation systems) used in crop production. </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="INPUT_SUPPLIER">
+				<xs:annotation>
+					<xs:documentation>A person or organization that supplies crop inputs (e.g., seed, fertilizers, and crop protection products) used to grow a crop.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="IRRIGATION_MANAGER">
+				<xs:annotation>
+					<xs:documentation>A person or organization who is responsible for the management of water and its application on a farm. </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="CROP_ADVISOR">
+				<xs:annotation>
+					<xs:documentation>A person or organization that provides Recommendations regarding how to grow a crop. </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="CUSTOM_SERVICE_PROVIDER">
+				<xs:annotation>
+					<xs:documentation>A person or organization that provides field operations-related services (e.g., spraying, spreading, harvesting).</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="LABORER">
+				<xs:annotation>
+					<xs:documentation>A person who harvests (typically manually) a commodity or performs other direct labor toward the production of a crop. </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="TRANSPORTER">
+				<xs:annotation>
+					<xs:documentation>A person or organization that transports crop inputs or harvested commodities. </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="DATA_SERVICES_PROVIDER">
+				<xs:annotation>
+					<xs:documentation>A person or organization that provides data used to plan, prepare for, or execute a field operation.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="AUTHORIZER">
+				<xs:annotation>
+					<xs:documentation>A person who authorizes the execution of a field operation. </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="UnitOfMeasureAuthorityEnum">
+		<xs:annotation>
+			<xs:documentation>Describes the organization providing the controlled vocabulary of units of measure used in a document or part thereof.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="UNREC20">
+				<xs:annotation>
+					<xs:documentation>UN/CEFACT Recommendation 20 (http://www.unece.org/fileadmin/DAM/cefact/recommendations/rec20/rec20_Rev7e_2010.zip)</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="QUDT">
+				<xs:annotation>
+					<xs:documentation>QUDT, a 501(c)(3) not-for-profit organization founded to provide semantic specifications for units of measure, quantity kind, dimensions and data types. (http://www.qudt.org).</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="UCUM">
+				<xs:annotation>
+					<xs:documentation>Universal Code of Units of Measure (http://www.unitsofmeasure.org).</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="ADAPT">
+				<xs:annotation>
+					<xs:documentation>AgGateway's ADAPT toolkit (http://www.adaptframework.org).</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="DCMetadata">
+		<xs:annotation>
+			<xs:documentation>Defines a metatdata element according to the Dublin Core</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="DC_ID">
+				<xs:annotation>
+					<xs:documentation>Identifier from the Dublin Core vocabulary</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="VALUE">
+				<xs:annotation>
+					<xs:documentation>The metadata value.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="DCMetadataArray">
+		<xs:sequence>
+			<xs:element name="DCElement" type="DCMetadata" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

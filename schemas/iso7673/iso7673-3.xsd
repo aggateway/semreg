@@ -1,0 +1,1388 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns="http://aggateway.org/PAIL/0.1" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://aggateway.org/PAIL/0.1" elementFormDefault="qualified"
+	attributeFormDefault="unqualified">
+	<!-- Recommendation: Download archive file at https://github.com/AgGateway/PAIL/releases/latest and expand it into your working directory. -->
+	<xs:include schemaLocation="./ISO7673-1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>------------------------ OPERATIONS TYPE --------------------</xs:documentation>
+	</xs:annotation>
+	<xs:element name="operations" type="Operations">
+		<xs:annotation>
+			<xs:documentation>This element is a wrapper for a sequence of up to three operations-related child elements.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="Operations">
+		<xs:annotation>
+			<xs:documentation>This is the type for the outer-level "wrapper" for everything else. Note how it uses a sequence compositor. The implication of this is that the child elements need to be placed in the order in which they are declared in the type definition in the schema.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence maxOccurs="1">
+			<xs:element name="irrRefData" type="IrrReferenceData" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Contains  information common to all instances of Manufacturers' equipment models and products. This represents data shareable across the whole industry.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="irrSetupData" type="IrrSetupData" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Grower-specific information used to provide context for data exchange. It is possible for a grower to set up data exchange with a partner such as a crop advisor by sending IrrSetupData.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="irrDocs" type="IrrDocs" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>This element encapsulates a set of field operations-related documents: recommendations, work orders, and work records.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="unitOfMeasureAuthority" type="UnitOfMeasureAuthorityEnum"
+				minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="IrrDocs">
+		<xs:sequence>
+			<xs:element name="irrRecommendation" type="IrrRecommendation" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Irrigation recommendation document. Describes a course of action suggested by an actor with expertise.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="irrWorkOrder" type="IrrWorkOrder" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Irrigation work order document. Describes a course of action indicated by an actor with authority.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="irrWorkRecord" type="IrrWorkRecord" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Irrigation work record document. Describes the water and products applied by an irrigation system; i.e., what actually happened in the field.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>------------------------ REFERENCE DATA-RELATED TYPES --------------------</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="IrrReferenceData">
+		<xs:annotation>
+			<xs:documentation>Type used to define unique identifiers for a manufacturer and the things that are expressed in terms of manufacturers. Note that the manufacturer's GLN and/or website can be defined as UniqueIDs of type GLN or URI within the CompoundIdentifier. </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="manufacturer" type="Manufacturer" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Reference data describing a manufacturer of products or equipment.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="systemModel" type="SystemModel" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Reference data describing a particular manufacturer-specific model of equipment.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="product" type="Product" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Reference data describing a particular manufacturer-specific product to be applied through an irrigation system (e.g., a chemical or fertilizer.)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>++++++++++++++++++++++++++++++++++++++++++++++++++++++</xs:documentation>
+	</xs:annotation>
+	<xs:annotation>
+		<xs:documentation>------------------------ OPERATIONS-RELATED TYPES --------------------</xs:documentation>
+	</xs:annotation>
+	<xs:annotation>
+		<xs:documentation>------------------------ Operations-related type: Setup --------------------</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="IrrSystem">
+		<xs:annotation>
+			<xs:documentation>Defines the properties of a particular irrigation system that persist through any kind of configuration change.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="id" type="CompoundIdentifier">
+				<xs:annotation>
+					<xs:documentation>Compound identifier for each particular instance of an irrigation system.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="description" type="xs:string"/>
+			<xs:element name="systemModelRef" type="xs:integer"/>
+			<xs:element name="systemCategory" type="SystemTypeEnum">
+				<xs:annotation>
+					<xs:documentation>Identifies what kind of system is being reported: Pivot, Linear, or Drip tape?</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="contextItem" type="ContextItem" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>List of context items. These allow associating geopolitical-context-specific information to otherwise universal data types..</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="IrrSetup">
+		<xs:annotation>
+			<xs:documentation>Provides data needed to understand data coming from an irrigation system: describes the system itself, as well as contextual information (e.g., the field(s) the system irrigates.)</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="id" type="CompoundIdentifier">
+				<xs:annotation>
+					<xs:documentation>This compound identifier allows for multiple System Setups to be handled by the system. This is important when the setup changes from time to time and the system can keep track of successive versions. Note that not all systems can do that, which is reflected in the SetupDataPedigree field.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="systemRef" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Reference to the irrigation system being described. Is optional to accommodate abstract, hardware-independent recommendations and work orders</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="systemLocation" type="Position" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Provides a geographical reference position for the system. Elevation is optional. The meaning of this point will vary depending on the type of system:
+Pivot: Center
+Linear: End of wheel track closest to the Northwest.
+Drop tape: Water inlet into the tape. This element is optional to accommodate abstract, hardware-independent recommendations and work orders.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="growerRef" type="xs:integer" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Optional reference to the grower(s) the irrigation system is associated with.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="farmRef" type="xs:integer" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Optional reference to the farm(s) the irrigation system is associated with.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="fieldRef" type="xs:integer" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Optional reference to the field(s) irrigated by the system.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="cropzoneRef" type="xs:integer" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Optional reference to the cropzone(s) irrigated by the system.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="sectionSetup" type="SystemSectionSetup" minOccurs="1"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Described how the irrigation system (or area to be irrigated, in the case of abstract, hardware-independent recommendations and work orders) is divided into sections. It is acceptable for a system to have only 1 section.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="spatialFootprint" type="MultiPolygonSpatialScope" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>This polygon is meant to represent the irrigated area of the whole system.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="guidancePath" type="LineString" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>This polyline is meant to represent the guidance path for a corner arm..</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="cornerArm" type="CornerArmTypeEnum" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Enumerated value that describes whether corner arm leads or trails (when moving clockwise)..</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="flowDataPedigree" type="FlowDataSourceEnum" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Provides information about how the flow data is being generated: flow data is read from a flow meter, estimated from an hour meter.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="locationDataPedigree" type="PositionDataSourceEnum" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Provides information about how the system location data is being generated.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="timeDataPedigree" type="TimeDataSourceEnum" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Provides information about how the system event data is being generated. This can be useful in interpreting the perceived behavior of the system (e.g., a pivot appearing to speed up or slow down as a result of events being delayed but tagged with server time.)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="timeScope" type="TimeScope" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>TimeScope allows data consumers to interpret the meaning of the Setup record. If the system can only keep track of one (the latest) setup, then there should be no EndDateTime specified; the same should happen if this is the current setup of a system. If this is a past setup and the start and end date/times are known, then they should be documented here. If the system does not know when this setup became valid, then this element should be skipped.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="systemLength" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Useful for identifying systems and allocating water in FMIS. Optional.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="lengthUoM" type="xs:token" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Use a UN Rec 20 Common Code here: FOT (feet) or MTR (meter).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="areaTotalUoM" type="xs:token" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Unit of measure of the total irrigated area covered by a recommendation, work order or work record, in the form of a UN Rec 20 code, e.g., "ACR" for US acre.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="endgunSetup" type="EndgunSetup" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Basic information of how the endgun is set up. It may contain a nominal value of the water applied or a table expressing where the water is applied by the endgun.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="nominalPressure" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Minimum pressure value that constitutes the system as applying water.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="nominalEfficiency" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Efficiency as it applies to the whole system when no other section specific efficiency values are present and when no WorkRecord specific values are given.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="pressureUoM" type="xs:token" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Use a UN Rec. 20 Common Code here: PS (PSI), BAR (bar), etc.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="pressureLocation" type="PressureLocationEnum" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Physical location in the system where the pressure is being measured.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="nominalFlow" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The nominal volume per unit time being delivered by the irrigation system.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="flowUoM" type="xs:token" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Unit of measure used to express all flows in the system (e.g., NominalFLow.) Use a UN Rec. 20 Common Code here: G2 (GPM), MLT (milliliter), etc.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="depthUoM" type="xs:token" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Unit of measure used to express irrigation depth (e.g., within SectionFlow elements.) Use a UN Rec. 20 Common Code here: INH (inch), MLT (mL), etc.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="waterTotalUoM" type="xs:token" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Unit of measure of the total amount of water applied, in the form of a UN Rec 20 code, e.g., "GLL" for US gallon.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="productRateUoM" type="xs:token" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Unit of measure used to express product (e.g., chemical or fertilizer) rate within SectionFlow elements. Use a UN Rec. 20 Common Code here: G2 (GPM), 59 (ppm), etc.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="productTotalUoM" type="xs:token" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Unit of measure used to express total product (e.g., chemical or fertilizer) used within SectionFlow elements. Use a UN Rec. 20 Common Code here: GLL (US gallon), KGM (kilogram), etc.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="nominalFullCircleTime" type="xs:duration" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The time (formatted as per the XML duration type) that it takes a pivot to make a full circle at maximum speed. For partial circles, the time is for a full 360 degree rotation.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="note" type="Note" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>An optional note, including free text, optional time, location, and person/role.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="bearingOffset" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Offset to convert (additively) from bearing reported by machine to actual compass bearing. IMPORTANT: this offset, if nonzero, will also act on plans, recommendations, and not just work orders (this applies to *all* records).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="description" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Human readable description of the setup.  Usefull when multiple setups exist for the same pivot.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="waterSourceRef" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Reference to a WaterSourceType object representing the default water source for this Setup instance.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="IrrSetupData">
+		<xs:sequence>
+			<xs:element name="grower" type="Grower" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Optional list of growers / business entities.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="farm" type="Farm" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Optional list of farms. Note that farms reference a grower.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="field" type="Field" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Optional list of fields. Note that fields reference a grower, and a farm.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="cropzone" type="Cropzone" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Optional list of cropzones. Note that cropzones reference a field.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="fieldBoundary" type="FieldBoundary" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Optional list of field boundaries. Field boundaries reference fields.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="person" type="Person" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Optional list of persons.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="personRole" type="PersonRole" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Optional list of person/role combinations. PersonRoles can happen in the context of a specific grower / business.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="irrSystem" type="IrrSystem" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Definition of specific irrigation systems, independent of setup. This is optional in order to accommodate an Operations file containing only abstract, hardware-independent recommendations and/or work orders.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="irrSetup" type="IrrSetup" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Definition of the setup of a particular irrigation system (during an optional time period. Can also be used independently of a system, for hardware-independent recommendations and work orders.)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="waterSource" type="WaterSource" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Definition of the sources of water sources used by this Farm in irrigation records.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="set" type="Set" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Set">
+		<xs:sequence>
+			<xs:element name="id" type="CompoundIdentifier"/>
+			<xs:element name="name" type="xs:string" minOccurs="0"/>
+			<xs:element name="description" type="xs:string" minOccurs="0"/>
+			<xs:element name="imeScope" type="TimeScope" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Time range over which this set definition is valid.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="contextItem" type="ContextItem" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="WaterSource">
+		<xs:sequence>
+			<xs:element name="id" type="CompoundIdentifier"/>
+			<xs:element name="sourceType" type="WaterSourceTypeEnum"/>
+			<xs:element name="name" type="xs:string" minOccurs="0"/>
+			<xs:element name="description" type="xs:string" minOccurs="0"/>
+			<xs:element name="contextItem" type="ContextItem" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>------------------------ Operations-related type: Recommendation -------------------</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="IrrRecommendation">
+		<xs:annotation>
+			<xs:documentation>Irrigation recommendation document. Describes a course of action suggested by an actor with expertise.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:annotation>
+				<xs:documentation>Note that there is only one Setup element per IrrigRecommendation element. The idea is to keep things simple for the user so it is always clear what the assumed setup is. Multiple recommendations can refer to the same setup as needed. </xs:documentation>
+			</xs:annotation>
+			<xs:element name="id" type="CompoundIdentifier">
+				<xs:annotation>
+					<xs:documentation>Compound identifier for the recommendation. Links to specific information about the document can be included via a URI within the CompoundIdentifier.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="description" type="xs:string" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Brief, human-readable description of the recommendation. It is required, since it is simple to auto-generate a description if needed.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="version" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Optional integer version number. Used to keep track of successive versions of the recommendation during an exchange among different actors.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="setupRef" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>This is the unique identifier of the IrrigationSetupDocument corresponding to the </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="growerRef" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Optional reference to the grower(s) the irrigation system is associated with.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="farmRef" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Optional reference to the farm(s) the irrigation system is associated with.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="fieldRef" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Optional reference to the field(s) irrigated by the system.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="cropzoneRef" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Optional reference to the cropzone(s) irrigated by the system.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="personRoleRef" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Reference to a person/role combination relevant to this document.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="timeScope" type="TimeScope" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>This element describes the desired start and end times for the IrrigWorkOrder record.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="spatialScope" type="SpatialScope" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>This element describes the spatial footprint of the records. If we are working with a pivot, we'd typically expect to see Start Angle and EndAngle. However, there may be pivots that do not have the means to tell their azimuth, so it is optional. In the case of a lateral the spatial footprint of the observations would be expressed in polygon form.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="totalArea" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Total irrigated area, or estimate thereof. The unit of measure is defined in the corresponding IrrigationSetup element. This area should not exceed that of the footprint of the system; i.e., if a recommendation describes two full revolutions of a 10-hectare center pivot, the TotalArea is 10 hectares, NOT 20.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="totalWater" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Total amount of water to apply, or estimate thereof. The unit of measure is defined in the corresponding IrrigationSetup element. Also, this element enables abstract recommendations such as "Given X gallons of water, apply them to fields A, B, and C."</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="productSummary" type="ProductSummary" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="irrColl" type="IrrCollection" minOccurs="1" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>One or more collections of sequences of recommended irrigated "pie slices" of a pivot, or their counterparts for the irrigation system type in question.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="originatingDataSetRef" type="xs:string" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Establishes an optional relationship with observations and measurements that informed the creation of this Recommendation.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="note" type="Note" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>An optional note, including free text, optional time, location, and person/role.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="contextItem" type="ContextItem" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>List of context items. These allow associating geopolitical-context-specific information to otherwise universal data types..</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="setupURL" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Universal resource locator for the setup information corresponding to this IrrReccomendation. Not necessary if the Setup data is included along with the dataset.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="waterSourceReference" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>------------------------ Operations-related type: Work Order -------------------</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="IrrWorkOrder">
+		<xs:annotation>
+			<xs:documentation>Irrigation work order document. Describes a course of action indicated by an actor with authority.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:annotation>
+				<xs:documentation>Note that there is only one Setup element per IrrigWorkOrder element. The idea is to keep things simple for the user so it is always clear what the assumed setup is. Multiple work orders can refer to the same setup as needed. </xs:documentation>
+			</xs:annotation>
+			<xs:element name="id" type="CompoundIdentifier">
+				<xs:annotation>
+					<xs:documentation>Compound identifier for the work order. Links to specific information about the document can be included via a URI within the CompoundIdentifier.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="description" type="xs:string" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Brief, human-readable description of the work order. It is required, since it is simple to auto-generate a description if needed.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="version" type="xs:integer" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Optional integer version number. Used to keep track of successive versions of the work order during an exchange among different actors.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="setupRef" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>This is the unique identifier of the IrrigationSetupDocument corresponding to the </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="growerRef" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Optional reference to the grower(s) the irrigation system is associated with.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="farmRef" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Optional reference to the farm(s) the irrigation system is associated with.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="fieldRef" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Optional reference to the field(s) irrigated by the system.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="cropzoneRef" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Optional reference to the cropzone(s) irrigated by the system.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="personRoleRef" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Reference to a person/role combination relevant to this document.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="timeScope" type="TimeScope" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>This element describes the desired start and end times for the IrrigWorkOrder record.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="spatialScope" type="SpatialScope" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>This element describes the spatial footprint of the records. If we are working with a pivot, we'd typically expect to see Start Angle and EndAngle. However, there may be pivots that do not have the means to tell their azimuth, so it is optional. In the case of a lateral the spatial footprint of the observations would be expressed in polygon form.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="totalArea" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Total irrigated area, or estimate thereof. The unit of measure is defined in the corresponding IrrigationSetup element. This area should not exceed that of the footprint of the system; i.e., if a work order describes two full revolutions of a 10-hectare center pivot, the TotalArea is 10 hectares, NOT 20.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="totalWater" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Total amount of water to apply, or estimate thereof. The unit of measure is defined in the corresponding IrrigationSetup element. Also, this element enables abstract work orders such as "Given X gallons of water, apply them to fields A, B, and C."</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="productSummary" type="ProductSummary" minOccurs="0"
+				maxOccurs="unbounded"/>
+			<xs:element name="irrColl" type="IrrCollection" minOccurs="1" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>One or more collections of sequences of requested, irrigated "pie slices" of a pivot, or their counterparts for the irrigation system type in question.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="originatingDataSetRec" type="xs:string" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Establishes an optional relationship with observations and measurements that informed the creation of this Recommendation.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="originatingRecRef" type="xs:string" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Establishes an optional relationship with a recommendation that informed the creation of this Work order.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="note" type="Note" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>An optional note, including free text, optional time, location, and person/role.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="contextItem" type="ContextItem" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>List of context items. These allow associating geopolitical-context-specific information to otherwise universal data types..</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="statusUpdate" type="WorkStatusUpdate" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Optional list of work status updates.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="setupURL" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Universal resource locator for the setup information corresponding to this IrrWorkOrder. Not necessary if the Setup data is included along with the dataset.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="waterSourceReference" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>------------------------ Operations-related type: Work Record -------------------</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="IrrWorkRecord">
+		<xs:annotation>
+			<xs:documentation>Irrigation work record document. Describes the water and products applied by an irrigation system; i.e., what actually happened in the field.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:annotation>
+				<xs:documentation>Note that there is only one Setup element per IrrWorkRecord element. The idea is to keep things simple for the user when there are changes in system setup over the course of the time interval of readings requested from the API. In that case there would be multiple IrrWorkRecordType elements returned, each with its own unique Setup element. </xs:documentation>
+			</xs:annotation>
+			<xs:element name="id" type="CompoundIdentifier">
+				<xs:annotation>
+					<xs:documentation>Compound identifier for the work record. Multiple identifiers can be associated with this
+					document via UUIDs and URIs within the CompoundIdentifier.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="description" type="xs:string" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Brief, human-readable description of the work record. It is required, since it is simple to auto-generate a description if needed.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="setupRef" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Reference to the unique identifier of the IrrigationSetupDocument corresponding to the work record. </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="growerRef" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Optional reference to the grower(s) the irrigation system is associated with.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="farmRef" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Optional reference to the farm(s) the irrigation system is associated with.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="fieldRef" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Optional reference to the field(s) irrigated by the system.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="cropzoneRef" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Optional reference to the cropzone(s) irrigated by the system.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="personRoleRef" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Reference to a person/role combination relevant to this document.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="timeScope" type="TimeScope" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>This element describes the start and end times that bound the data contained in the IrrWorkRecord record.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="spatialScope" type="SpatialScope" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>This element describes the spatial footprint of the records. If we are working with a pivot, we'd typically expect to see Start Angle and EndAngle. However, there may be pivots that do not have the means to tell their azimuth, so it is optional. In the case of a lateral the spatial footprint of the observations would be expressed in polygon form.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="totalArea" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Total irrigated area. The unit of measure is defined in the corresponding IrrigationSetup element. This area should not exceed that of the footprint of the system; i.e., if a work record describes two full revolutions of a 10-hectare center pivot, the TotalArea is 10 hectares, NOT 20.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="totalWater" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Total amount of water applied. The unit of measure is defined in the corresponding IrrigationSetup element.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="productSummary" type="ProductSummary" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Summary of the products (e.g., chemicals or fertilizers) used during the
+					 work being described in the work record.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="irrColl" type="IrrCollection" minOccurs="1" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>One or more collections of sequences of documented, irrigated "pie slices" of a pivot, or their counterparts for the irrigation system type in question.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="originatingDataSetRef" type="xs:string" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Establishes an optional relationship with observations and measurements that informed the creation of this Recommendation.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="originatingRecRef" type="xs:string" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Establishes an optional relationship with a recommendation that informed the creation of this Work order.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="originatingWorkOrderRef" type="xs:string" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Establishes an optional relationship with a work order that motivated the field operation being documented.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="note" type="Note" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>An optional note, including free text, optional time, location, and person/role.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="contextItem" type="ContextItem" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>List of context items. These allow associating geopolitical-context-specific information to otherwise universal data types..</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="setupURL" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Universal resource locator for the setup information corresponding to this IrrWorkRecord. Not necessary if the Setup data is included along with the dataset.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="waterSourceReference" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>=========== As-Applied Types: Irrigation Item ============</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="IrrCollection">
+		<xs:annotation>
+			<xs:documentation>A collection of IrrItems or other Collections. Used to factor out things a set of IrrItems have in common, such as a local center of rotation.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="id" type="CompoundIdentifier" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="timeScope" type="TimeScope" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Start date/time and End date/time for the irrigated region being described. Its meaning will vary depending on whether it appears in a Work Record (observed times) or a Work Order (desired times). Is meant to act as an envelope for the TimeScopes of the IrrItems it contains.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="spatialScope" type="SpatialScope" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The RadialScope element expresses the start/end angle of a radial irrigated region. The InnerDistance and OuterDistance defined at the section levels, and referenced via the section IDs, provide a very compact shorthand way of completing the representation of the spatial coverage of most pivot sections. The PolygonScope element is never used here: spatial coverage of pivot corner arms, pivot wraps/benders, laterals, and traveling guns should be expressed as polygons at the section level. Spatial coverage of tape sections is defined in the section setup, so the section ID should suffice to describe coverage.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="flowTag" type="FlowTagEnum" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>This is a simple mechanism for communicating information about the record: was the system chemigating? Was it fertigating? This list could conceivably grow in future versions. Note that, while chemigation and fertigation tags seem redundant inn the context of product use reporting at the section level, the reality of irrigation monitoring systems at the time of this writing is that specific products can usually not be documented before the data is processed in an FMIS. These flags provide the FMIS operator with a warning that additional data entry is needed.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="pressure" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Pressure value corresponding to the whole collection-.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="rotCtr" type="Position" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Used to define a local center of rotation for the set of IrrItems contained in an  IrrCollection. This is useful for benders / wrap spans in a pivot.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="irrItem" type="IrrItem" minOccurs="1" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>This is the sequence of documented irrigated "pie slices" of a pivot, or their counterparts for the irrigation system type in question.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="estimatedEfficiency" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The estimated efficiency of this application.  This value overrides the NominalEfficiency values given in the setup.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="contextItem" type="ContextItem" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>List of context items. These allow associating geopolitical-context-specific information to otherwise universal data types..</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="waterSourceReference" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="IrrItem">
+		<xs:annotation>
+			<xs:documentation>Description of the water (and products) applied TODO: documentation</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="timeScope" type="TimeScope" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Start date/time and End date/time for the irrigated region being described. Its meaning will vary depending on whether it appears in a Work Record (observed times) or a Work Order (desired times).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="spatialScope" type="SpatialScope" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The RadialScope element expresses the start/end angle of a radial irrigated region. The InnerDistance and OuterDistance defined at the section levels, and referenced via the section IDs, provide a very compact shorthand way of completing the representation of the spatial coverage of most pivot sections. The PolygonScope element is never used here: spatial coverage of pivot corner arms, pivot wraps/benders, laterals, and traveling guns should be expressed as polygons at the section level. Spatial coverage of tape sections is defined in the section setup, so the section ID should suffice to describe coverage.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="flowTag" type="FlowTagEnum" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>This is a simple mechanism for communicating information about the record: was the system chemigating? Was it fertigating? This list could conceivably grow in future versions. Note that, while chemigation and fertigation tags seem redundant inn the context of product use reporting at the section level, the reality of irrigation monitoring systems at the time of this writing is that specific products can usually not be documented before the data is processed in an FMIS. These flags provide the FMIS operator with a warning that additional data entry is needed.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="rotCtr" type="Position" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Used to define a local center of rotation for the IrrItem. Would typically only be used in a recommendation or work order expressing high-level instructions: in a work record or other finer-granularity document this would be declared at the IrrCollection level.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="sectionFlow" type="SectionFlow" minOccurs="1" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="pressure" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The average pressure as recorded during the execution of Work Record within the scope of this particular IrrItem</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="errorCode" type="IrrErrorCodeEnum" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>This code, when present, indicates that an error occurred during the execution of the field operation described by the IrrItem.  This code applies to all of the SectionFlow elements in this IrrItem.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="estimatedEfficiency" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The estimated efficiency of this application for this particular section.  This value overrides the EstimatedEfficiency specified for the IrrCollection and the values specified in the IrrSetup.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="contextItem" type="ContextItem" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>List of context items. These allow associating geopolitical-context-specific information to otherwise universal data types..</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="waterSourceReference" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>------------------------------ Products -----------------------------------</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="ProductSummary">
+		<xs:annotation>
+			<xs:documentation>Note how this uses an integer to refer to the product being used. The product is defined under ReferenceData, and the integer is the short reference ID in the product's CompoundIdentifier</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="productRef" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>This is a shorthand identifier for the product, that will be used in section flows. This value allows listing all the products that are used in the work record, document them once here, and refer to them using the ID in the section flow records.The compound identifier it references can also include one or more unique IDs and a source (e.g., a GLN or a URI) for the product ID.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="productRateCategory" type="ProductRateEnum">
+				<xs:annotation>
+					<xs:documentation>Explains how the product is applied and what to expect in terms of units of measure. The nomenclature corresponds to DDIs used by the ISO11783-10 standard, available at http://dictionary.isobus.net/isobus/ Note that if VolumePerTime and MassPerTime are being used, these are expressed on a per SECTION basis in the SectionFlow elements, and would typically be equal to the system-wide injection rate only in a single-section system. Also, if there is a change in the water flow rate through the pivot (e.g., as an end gun is turned on/off) the effect of that change of water flow on product concentration (in the context of an assumed constant injection rate) must be taken into account.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="productRateUoM" type="xs:token" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>The unit of measure used to apply the product, or an extension thereof. This unit should be convertible to the unit used inn the corresponding ISO11783-10 DDI.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="productTotal" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Total amount of the product applied over the scope of the document.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="productTotalUoM" type="xs:token" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>WMO Common Code for the unit of measure used to describe the total product applied, or an extension thereof. This unit should be convertible to the unit used inn the corresponding ISO11783-10 DDI.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="productId" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Reference ID of the Product as defined in the IrrRefData.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SectionProductUse">
+		<xs:annotation>
+			<xs:documentation>This element enables expressing how much of a product (e.g., a fertilizer or crop protection product) was/should be used in a section flow. IMPORTANT: At least one of Rate or Tot should be populated.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="pdtRef" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Should match the ID of a corresponding ProductSetup record under the parent Work Record / Work Order.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="rate" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The meaning of this value should match the rate type specified in the ProductSetup record; i.e., if the ProductSetup record specifies, say, a volume per time rate, this Rate value should be in Liters per minute, or similar.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="tot" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Total product used in this section during this observation. This total should correspond to the makeup (solid or liquid) described in the Product record.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>------------- Endgun Types ---------------</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="EndgunTableEntry">
+		<xs:annotation>
+			<xs:documentation>Enables the detailed specification of endgun behavior, by capturing pressure, flowvalue, throwvalue tuples on an endgun table.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="pressure" type="xs:double">
+				<xs:annotation>
+					<xs:documentation>The independent variable. Expected to be expressed in the units of pressure specified in the system setup.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="flowValue" type="xs:double">
+				<xs:annotation>
+					<xs:documentation>A dependent variable, used for water amount calculations. Assumed to be a value of volume per unit time, expressed in the flow unit of measure specified in the system setup.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="throwValue" type="xs:double">
+				<xs:annotation>
+					<xs:documentation>A dependent variable, used to calculate applied area and effective rate. Assumed to be a value of distance, expressed in the corresponding unit of measure specified in the system setup.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="EndgunTable">
+		<xs:annotation>
+			<xs:documentation>TODO: documentation</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="tableEntry" type="EndgunTableEntry" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="EndgunSetup">
+		<xs:annotation>
+			<xs:documentation>TODO: documentation</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="manufacturerRef" type="xs:string" minOccurs="0"/>
+			<xs:element name="model" type="xs:token" minOccurs="0"/>
+			<xs:choice>
+				<xs:element name="NominalValues" type="EndgunTableEntry">
+					<xs:annotation>
+						<xs:documentation>Nominal Values is where we would typically enter a nominal throw estimate and a nominal endgun flow estimate.</xs:documentation>
+						<xs:documentation>The pressure field can be used to note what pressure is being assumed.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="TabularValues" type="EndgunTable">
+					<xs:annotation>
+						<xs:documentation>This optional table allows documenting the tabulated relationship between pressure and throw/flow in an endgun.</xs:documentation>
+						<xs:documentation>This is relevant in situations where calculating the throw and rate of the endgun output is important but pressure fluctuates.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>------------- Section Setup Type ---------------</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="SystemSectionSetup">
+		<xs:annotation>
+			<xs:documentation>This element sets up the "shorthand" of reducing the reporting of section flows to name-value pairs where possible, by encapsulating the description of the details of a section in an element that can be referenced by its SectionID in section flows,</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="sectionId" type="CompoundIdentifier">
+				<xs:annotation>
+					<xs:documentation>In pivots and linear systems sections are generally assumed to be contiguous (excepting some endgun scenarios); in pivot systems section 1 is assumed to be closest to the center. In linear systems section 1 is the section with a wheeltrack intersecting the SystemLocation. In drip tape systems section numbers can be arbitrary. Traveling gun and stationary gun systems are assumed to have only one section.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="sectionCategory" type="SectionTypeEnum" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>A complement to SystemType, in that it provides data consumers with information to support interpreting the data. </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="innerDistance" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>InnerLength describes the distance from the proximal end of the section to the system reference point (e.g. pivot center). It is optional, and the meaning of its absence is context-dependent: a) In section 1, an absent InnerLength is assumed to have a value of 0. In subsequent sections an absent InnerLength is assumed to take the value of the previous section's OuterLength.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="outerDistance" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>In a single-section pivot system this value would equal the system length. Note that in a lateral system that has an endgun on the span of section 1, the corresponding endgun section would have an out-of-sequence number, a 0 InnerDistance, and a negative OuterDistance. This element is optional, to accommodate non-radial footprints.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="spatialFootprint" type="MultiPolygonSpatialScope" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>This ability to provide a static spatial footprint for a section is meaningful only for a drip tape system or other stationary system.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="nominalEfficiency" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Default efficiency for the section.  When present, this value supersedes the system level NominalEfficiency.  When WorkRecord items specify efficiency, those values override this value.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="setReference" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>A reference to the Set which contains this Block. This is the default Set membership. </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>------------- Section Flow Type ---------------</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="SectionFlow">
+		<xs:annotation>
+			<xs:documentation>Describes the amount of water (and possibly other products) applied to a region / during a time period through a section of an irrigation system.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="sectionRef" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Shorthand reference to the Id for the section, corresponding to the Ids declared for each section in SectionSetupType</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="vol" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Total volume (expressed in the VolumeUoM listed in the IrrigSetupDoc) of water applied to the section during the time period of interest. At least one of Vol and Depth must be present.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="depth" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Irrigation depth applied to / desired on (volume / application area, expressed in the DepthUoM listed in the IrrigSetupDoc) the section during the time period corresponding to the observation. At least one of Vol and Depth must be present.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="waterLevel" type="xs:double" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Relevant to surface irrigation, represents the desired (or achieved in the case of a Work Record) water level in the irrigated area, e.g., a paddy. Expressed in the DepthUoM listed in the IrrigSetupDoc. Vol and/or Depth can also be present, to represent the mass balance aspect; i.e., how much water must be added (positive) or removed (negative) to reach the desired goal.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="productUse" type="SectionProductUse" minOccurs="0"
+				maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Describes the (observed or desired) use within this section of a given product specified by an ID which is matched by the ID of a ProductSetup record at the work record / work order level.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="polygonCoverage" type="MultiPolygonSpatialScope" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>This polygon documents the coverage area for a) irregular coverages on pivots such as corner arms and wraps/benders, b) laterals. and c) Traveling guns. Although it can conceivably be used to document the coverage of pivot spans, using radial scope of the parent along with section number is much more compact.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="WaterSourceReference" type="xs:string" minOccurs="0"
+				maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="WorkStatusUpdate">
+		<xs:annotation>
+			<xs:documentation>Used to describe the status of a document that reflects an amount of work (typically a work order).</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="status" type="WorkStatusEnum">
+				<xs:annotation>
+					<xs:documentation>Enumerated value of the work status.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="comment" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Optional human-readable comment regarding the status.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="timeStamp" type="xs:dateTime">
+				<xs:annotation>
+					<xs:documentation>Describes when the change of status occurred.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>---------- Reference Data: System Model Type ---------- </xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="SystemModel">
+		<xs:annotation>
+			<xs:documentation>Type used to define unique identifiers for an irrigation system</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="id" type="CompoundIdentifier">
+				<xs:annotation>
+					<xs:documentation>Compound identifier that establishes a "shorthand" integer used to refer to this SystemModel in the scope of the XML file, along with a collection of unique ids that represent the system model in FMIS and other systems.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="manufacturerRef" type="xs:integer">
+				<xs:annotation>
+					<xs:documentation>Shorthand integer id corresponding to the reference identifier of the system model's manufacturer's CompoundIdentifier Id. </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="description" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Human-readable name for the system model number; e.g. "E5000" </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="sysCategory" type="SystemTypeEnum">
+				<xs:annotation>
+					<xs:documentation>Enumerated description of the type of irrigation system (pivot, linear, etc.)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="brand" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Human-readable brand name; e.g., "Valley", "Zimmatic", etc.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="series" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Human-readable series name. "e.g., "8000 Series")</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="contextItem" type="ContextItem" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>List of context items. These allow associating geopolitical-context-specific information to otherwise universal data types..</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>-------------------------------------------- ENUMERATIONS -----------------------------------</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType name="FlowTagEnum">
+		<xs:annotation>
+			<xs:documentation>Enables tagging a section flow so it is easily discernible as including application of products.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CHEMIGATING">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="FERTIGATING">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="FlowDataSourceEnum">
+		<xs:annotation>
+			<xs:documentation>How is flow reported.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="FLOWMETER">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="HOURMETER">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="UNKNOWN">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="PressureLocationEnum">
+		<xs:annotation>
+			<xs:documentation>Location of where pressure is read.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="AT_PUMP">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="AT_BASE_OF_SYSTEM">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="AT_END_OF_SYSTEM">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="UNKNOWN">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ProductRateEnum">
+		<xs:annotation>
+			<xs:documentation>Describes how a product application rate will be specified. The unit of measure used must be consistent with this value.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="VOLUME_PER_AREA">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="MASS_PER_AREA">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="VOLUME_PER_AREA">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="MASS_PER_VOLUME">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="VOLUME_PER_TIME">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="MASS_PER_TIME">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="SystemTypeEnum">
+		<xs:annotation>
+			<xs:documentation>Type of irrigation system.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="PIVOT">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="LINEAR">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="FIXED_ZONE">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="TRAVELING_GUN">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="SectionTypeEnum">
+		<xs:annotation>
+			<xs:documentation>Describes the type of section.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="SPAN">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="ENDBOOM">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="ENDGUN">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="CORNER">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="WARP_BENDER">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="FIXED">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CornerArmTypeEnum">
+		<xs:annotation>
+			<xs:documentation>Describes how the corner arm is configured. Leading / trailing is with respect to the system moving clockwise..</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="LEADING">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="TRAILING">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="WorkStatusEnum">
+		<xs:annotation>
+			<xs:documentation>Used to describe the state of a work order.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CANCELED">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="SCHEDULED">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="IN_PROGRESS">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="PAUSED">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="PARTIALLY_COMPLETED">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="COMPLETED">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="IrrErrorCodeEnum">
+		<xs:annotation>
+			<xs:documentation>Used to describe error codes in an IrrItem</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="COMMUNICATION">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="LOW_PRESSURE">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="UNSPECIFIED">
+				<xs:annotation>
+					<xs:documentation>TODO</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="WaterSourceTypeEnum">
+		<xs:annotation>
+			<xs:documentation>Used to describe water sources</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="UNKNOWN">
+				<xs:annotation>
+					<xs:documentation>A water source whos type is no known</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="OTHER">
+				<xs:annotation>
+					<xs:documentation>A water source type that is not one of the enumerated values</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="GROUNDWATER">
+				<xs:annotation>
+					<xs:documentation>A water source whose primary origin is from groundwater</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="SURFACE">
+				<xs:annotation>
+					<xs:documentation>A water source whose primary origin is from riparian sources (including but not limited to snowmelt or runoff)</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="MUNICIPAL">
+				<xs:annotation>
+					<xs:documentation>A water source whose primary origin is a municipal or urban water supplier</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="TAILWATER"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>
