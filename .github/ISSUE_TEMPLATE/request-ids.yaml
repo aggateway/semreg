@@ -1,0 +1,38 @@
+name: "\U0001F64B Request a range of IDs"
+description: To add new content to the AgGateway Semantic Registry you need IDs. Request them here.
+title: "\U0001F64B ID-request"
+labels: []
+assignees: []
+body:
+- type: markdown
+  id: intro
+  attributes:
+    value: >
+      We track provenance and want to give credit to contributors.
+      Please provide your [ORCID](https://orcid.org) below.
+      If you don't have one, your GitHub username will be used instead.
+      You may also supply the [ROR](https://ror.org) of your organization.
+
+      Tell us how many IDs you need and which source vocabulary or topic they relate to
+      (e.g. PLSS, WMO, USDA, EPA, MODUS, WG35).
+- type: input
+  id: orcid
+  attributes:
+    label: Your ORCID identifier.
+- type: input
+  id: ror
+  attributes:
+    label: The ROR of the organization you work for.
+- type: input
+  id: count
+  attributes:
+    label: Number of IDs requested.
+- type: input
+  id: topic
+  attributes:
+    label: Source vocabulary or topic (e.g. PLSS, WMO, USDA, EPA, MODUS, WG35).
+- type: textarea
+  id: message
+  attributes:
+    label: Additional information.
+    description: Optionally describe the concepts you plan to add.

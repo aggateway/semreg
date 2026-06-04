@@ -1,0 +1,133 @@
+# This action runs when a pull request to main is created or updated
+# (but not when it is merged into main).
+
+name: CI on pull request create or update
+on:
+  # Using "pull_request" is not sufficient to allow commits to PR branches in
+  # forks. Since the workflow only accesses the xlsx and turtle files, but does
+  # not run any code, it is safe to use pull_request_target. More info:
+  # https://securitylab.github.com/resources/github-actions-preventing-pwn-requests/
+  # zizmor: ignore[dangerous-triggers] OK as per comment above
+  pull_request_target:
+    branches:
+      - main
+    paths:
+      - 'inbox-excel-vocabs/**'
+    types: [opened, reopened, synchronize]
+  workflow_dispatch:
+
+env:
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
+  PIP_PROGRESS_BAR: "off"
+  LOGLEVEL: "DEBUG"
+  RUN_URL: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions: {}
+
+jobs:
+  build_vocab:
+    name: Merge & build vocabulary
+    if: ${{ !github.event.pull_request.merged }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout PR branch into cwd
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Checkout main branch into directory _main_branch/
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          ref: main
+          path: _main_branch
+          sparse-checkout: |
+            vocabularies/
+          fetch-depth: 1
+          persist-credentials: true
+
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
+        with:
+          python-version: '3.13'
+
+      - name: Install dependencies
+        run: |
+          python -VV
+          python -m pip install --upgrade pip setuptools wheel
+          python -m pip install git+https://github.com/nfdi4cat/voc4cat-tool.git@v1.0.4
+          python -m pip install git+https://github.com/dalito/pyLODE.git@nfdi4cat-2.x
+
+      - name: Set dynamic environment variables
+        run: |
+          echo "RUN_DATE=$(date +'%Y-%m-%dT%H%M')" >> $GITHUB_ENV
+
+      - name: Run voc4cat (pre-convert checks)
+        run: |
+          voc4cat --version
+          voc4cat check --config _main_branch/idranges.toml --logfile outbox/voc4cat.log --ci-pre inbox-excel-vocabs/ _main_branch/vocabularies
+          voc4cat check --config _main_branch/idranges.toml --logfile outbox/voc4cat.log --outdir outbox inbox-excel-vocabs/
+
+      - name: Run voc4cat (convert)
+        run: |
+          voc4cat convert --config _main_branch/idranges.toml --logfile outbox/voc4cat.log --outdir outbox inbox-excel-vocabs/
+          if [ ! -f outbox/*.ttl ]; then
+            echo "No ttl file in outbox. Building joined vocabulary ttl-file from individual ttl-files in vocabulary."
+            voc4cat transform --join --config _main_branch/idranges.toml --logfile outbox/voc4cat.log --outdir outbox/ vocabularies/
+          fi
+
+      - name: Run voc4cat (post-convert checks)
+        run: |
+          voc4cat check --redundant-hierarchies --config _main_branch/idranges.toml --logfile outbox/voc4cat.log outbox/
+          voc4cat check --config _main_branch/idranges.toml --logfile outbox/voc4cat.log --ci-post _main_branch/vocabularies outbox/
+
+      - name: Run voc4cat (build HTML documentation)
+        run: |
+          voc4cat docs --logfile outbox/voc4cat.log --force outbox/
+
+      - name: Split vocabulary, merge into vocabulary dir and update provenance info
+        run: |
+          voc4cat transform --split --inplace --config idranges.toml --logfile outbox/voc4cat.log --outdir outbox_new_voc outbox/
+          voc4cat-merge --logfile outbox/voc4cat.log outbox_new_voc/ vocabularies/
+          find inbox-excel-vocabs -name '*.xlsx' -exec cp {} -t outbox/ \;
+          git status
+          voc4cat transform --prov-from-git --diff-base origin/main --inplace --config idranges.toml --logfile outbox/voc4cat.log vocabularies/
+
+      - name: Run voc4cat (re-build updated Excel file and joined turtle vocabulary file)
+        run: |
+          mkdir -p outbox/updated-xlsx-ttl
+          voc4cat transform --join --config idranges.toml --logfile outbox/voc4cat.log --outdir outbox/updated-xlsx-ttl vocabularies/
+          voc4cat convert --config idranges.toml --logfile outbox/voc4cat.log --template templates/default_sheets.xlsx outbox/updated-xlsx-ttl
+
+      - name: Store artifacts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: voc4cat-outbox_${{ env.RUN_DATE }}_run${{ github.run_id }}
+          path: outbox/
+
+      - name: Add/stage vocabulary changes
+        uses: stefanzweifel/git-auto-commit-action@04702edda442b2e678b25b537cec683a1493fcb9
+        with:
+          file_pattern: 'vocabularies/\*.ttl'
+
+      - name: Remove Excel vocabulary files from inbox
+        run: |
+          git rm inbox-excel-vocabs/\*.xlsx || echo "No xlsx files to remove."
+          git status
+
+      - name: Commit vocabulary changes & xlsx cleanup on behalf of PR-author
+        uses: stefanzweifel/git-auto-commit-action@04702edda442b2e678b25b537cec683a1493fcb9
+        with:
+          commit_user_name: voc4cat-CI-bot
+          commit_message: 'CI: vocabulary update in ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
