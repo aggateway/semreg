@@ -5,7 +5,7 @@
 config_version = "v1.0"
 
 # Allow only a single vocabulary (default) or multiple vocabularies in the repository.
-single_vocab = true
+single_vocab = false
 
 # ==== Configuration for vocabulary "semreg" ====
 
@@ -106,5 +106,30 @@ first_id = 7000
 last_id = 9999
 gh_name = "AgGateway"
 name = "Reserved"
+orcid = ""
+ror_id = ""
+
+[vocabs.databom-stewardship]
+id_length = 7
+permanent_iri_part = "https://w3id.org/aggateway/semreg/databom-stewardship_"
+vocabulary_iri = "https://w3id.org/aggateway/semreg/databom-stewardship/"
+prefix = "semreg"
+title = "DataBOM Stewardship Metadata"
+description = "Controlled vocabulary of stewardship metadata attributes for the ADAPT Standard DataBOM framework."
+created_date = "2026-06-04"
+creator = "P. Isaac Riley https://orcid.org/0000-0000-0000-0000"
+repository = "https://github.com/AgGateway/semreg"
+
+[vocabs.databom-stewardship.checks]
+allow_delete = false
+
+[vocabs.databom-stewardship.prefix_map]
+semreg = "https://w3id.org/aggateway/semreg/databom-stewardship_"
+
+[[vocabs.databom-stewardship.id_range]]
+first_id = 6000
+last_id = 6999
+gh_name = "AgGateway"
+name = "WG35 DataBOM Stewardship Metadata"
 orcid = ""
 ror_id = ""

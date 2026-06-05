@@ -1,0 +1,168 @@
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix schema: <https://schema.org/> .
+@prefix semreg: <https://w3id.org/aggateway/semreg/databom-stewardship_> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://www.pinnaclesystemsgroup.com/people/isaac-riley>
+    a schema:Person ;
+    schema:name "P. Isaac Riley" ;
+    schema:url "https://www.pinnaclesystemsgroup.com"^^xsd:anyURI ;
+.
+
+<https://www.aggateway.org>
+    a schema:Organization ;
+    schema:name "AgGateway" ;
+    schema:url "https://www.aggateway.org"^^xsd:anyURI ;
+.
+
+<https://w3id.org/aggateway/semreg/databom-stewardship/>
+    a skos:ConceptScheme ;
+    dcterms:created "2026-06-04"^^xsd:date ;
+    dcterms:modified "2026-06-04"^^xsd:date ;
+    dcterms:creator <https://www.pinnaclesystemsgroup.com/people/isaac-riley> ;
+    dcterms:publisher <https://www.aggateway.org> ;
+    skos:definition "Controlled vocabulary of stewardship metadata attributes for the ADAPT Standard DataBOM framework."@en ;
+    skos:prefLabel "DataBOM Stewardship Metadata"@en ;
+    skos:historyNote "Created 2026-06-04 by WG35 as initial DataBOM stewardship metadata complex vocabulary submission."@en ;
+    skos:hasTopConcept
+        semreg:0006001 ,
+        semreg:0006010 ,
+        semreg:0006020 ,
+        semreg:0006030 ;
+.
+
+# ── ROOT CONCEPTS ────────────────────────────────────
+
+semreg:0006001
+    a skos:Concept ;
+    skos:inScheme <https://w3id.org/aggateway/semreg/databom-stewardship/> ;
+    skos:topConceptOf <https://w3id.org/aggateway/semreg/databom-stewardship/> ;
+    skos:prefLabel "DataCustodyRecord"@en ;
+    skos:definition "A record documenting the chain of custody for agricultural data, including originator attestation, transfer events, and cryptographic integrity verification."@en ;
+    skos:narrower semreg:0006002 , semreg:0006003 , semreg:0006004 ;
+.
+
+semreg:0006010
+    a skos:Concept ;
+    skos:inScheme <https://w3id.org/aggateway/semreg/databom-stewardship/> ;
+    skos:topConceptOf <https://w3id.org/aggateway/semreg/databom-stewardship/> ;
+    skos:prefLabel "PurposeClassification"@en ;
+    skos:definition "A classification scheme for the intended purpose of agricultural data collection and use, aligned with XACML policy enforcement."@en ;
+    skos:narrower semreg:0006011 , semreg:0006012 , semreg:0006013 ;
+.
+
+semreg:0006020
+    a skos:Concept ;
+    skos:inScheme <https://w3id.org/aggateway/semreg/databom-stewardship/> ;
+    skos:topConceptOf <https://w3id.org/aggateway/semreg/databom-stewardship/> ;
+    skos:prefLabel "MethodologyVersion"@en ;
+    skos:definition "A versioned reference to the scientific or regulatory methodology applied during agricultural data collection, enabling reproducibility and statutory protection against science-driven devaluation."@en ;
+    skos:narrower semreg:0006021 , semreg:0006022 ;
+.
+
+semreg:0006030
+    a skos:Concept ;
+    skos:inScheme <https://w3id.org/aggateway/semreg/databom-stewardship/> ;
+    skos:topConceptOf <https://w3id.org/aggateway/semreg/databom-stewardship/> ;
+    skos:prefLabel "PolicyEnforcement"@en ;
+    skos:definition "Mechanisms for enforcing data governance policies including XACML policy references, attestation levels, and statutory buffer pool requirements."@en ;
+    skos:narrower semreg:0006031 , semreg:0006032 , semreg:0006033 ;
+.
+
+# ── DATACUSTODYRECORD CHILDREN ───────────────────────
+
+semreg:0006002
+    a skos:Concept ;
+    skos:inScheme <https://w3id.org/aggateway/semreg/databom-stewardship/> ;
+    skos:prefLabel "OriginatorAttestation"@en ;
+    skos:definition "A signed declaration by the data originator confirming the provenance, collection conditions, and completeness of an agricultural data record."@en ;
+    skos:broader semreg:0006001 ;
+.
+
+semreg:0006003
+    a skos:Concept ;
+    skos:inScheme <https://w3id.org/aggateway/semreg/databom-stewardship/> ;
+    skos:prefLabel "TransferCustodyEvent"@en ;
+    skos:definition "A recorded event documenting the transfer of data custody from one party to another, including timestamp, parties involved, and transfer conditions."@en ;
+    skos:broader semreg:0006001 ;
+.
+
+semreg:0006004
+    a skos:Concept ;
+    skos:inScheme <https://w3id.org/aggateway/semreg/databom-stewardship/> ;
+    skos:prefLabel "CustodyChainHash"@en ;
+    skos:definition "A cryptographic hash of the complete custody chain, enabling tamper-evident verification of data provenance integrity."@en ;
+    skos:broader semreg:0006001 ;
+.
+
+# ── PURPOSECLASSIFICATION CHILDREN ──────────────────
+
+semreg:0006011
+    a skos:Concept ;
+    skos:inScheme <https://w3id.org/aggateway/semreg/databom-stewardship/> ;
+    skos:prefLabel "PrimaryAgriculturalPurpose"@en ;
+    skos:definition "Classification of data collected primarily for agricultural production management including planting, application, and harvest operations."@en ;
+    skos:broader semreg:0006010 ;
+.
+
+semreg:0006012
+    a skos:Concept ;
+    skos:inScheme <https://w3id.org/aggateway/semreg/databom-stewardship/> ;
+    skos:prefLabel "CompliancePurpose"@en ;
+    skos:definition "Classification of data collected or processed for regulatory compliance including FSA reporting, crop insurance, and conservation program documentation."@en ;
+    skos:broader semreg:0006010 ;
+.
+
+semreg:0006013
+    a skos:Concept ;
+    skos:inScheme <https://w3id.org/aggateway/semreg/databom-stewardship/> ;
+    skos:prefLabel "CommercialPurpose"@en ;
+    skos:definition "Classification of data collected or processed for commercial transactions including carbon credit attestation, commodity grading, and supply chain traceability."@en ;
+    skos:broader semreg:0006010 ;
+.
+
+# ── METHODOLOGYVERSION CHILDREN ─────────────────────
+
+semreg:0006021
+    a skos:Concept ;
+    skos:inScheme <https://w3id.org/aggateway/semreg/databom-stewardship/> ;
+    skos:prefLabel "CarbonMethodologyRef"@en ;
+    skos:definition "A versioned reference to the carbon accounting methodology applied during data collection, required for carbon credit attestation and statutory protection against methodology-driven devaluation."@en ;
+    skos:broader semreg:0006020 ;
+.
+
+semreg:0006022
+    a skos:Concept ;
+    skos:inScheme <https://w3id.org/aggateway/semreg/databom-stewardship/> ;
+    skos:prefLabel "YieldNormalizationMethodRef"@en ;
+    skos:definition "A versioned reference to the yield normalization methodology applied during data processing, enabling reproducible comparison across growing seasons and geographies."@en ;
+    skos:broader semreg:0006020 ;
+.
+
+# ── POLICYENFORCEMENT CHILDREN ───────────────────────
+
+semreg:0006031
+    a skos:Concept ;
+    skos:inScheme <https://w3id.org/aggateway/semreg/databom-stewardship/> ;
+    skos:prefLabel "XACMLPolicyURI"@en ;
+    skos:definition "A resolvable URI reference to the XACML 3.0 policy document governing permitted uses of an agricultural data record under the AgDataCM framework."@en ;
+    skos:broader semreg:0006030 ;
+.
+
+semreg:0006032
+    a skos:Concept ;
+    skos:inScheme <https://w3id.org/aggateway/semreg/databom-stewardship/> ;
+    skos:prefLabel "AttestationLevel"@en ;
+    skos:definition "An ordinal classification of the verification strength applied to an agricultural data record, ranging from self-attested producer declaration to hardware-anchored ZTI attestation."@en ;
+    skos:broader semreg:0006030 ;
+.
+
+semreg:0006033
+    a skos:Concept ;
+    skos:inScheme <https://w3id.org/aggateway/semreg/databom-stewardship/> ;
+    skos:prefLabel "StatutoryBufferPool"@en ;
+    skos:definition "A mandatory 10 percent stability reserve indemnifying agricultural lenders against carbon credit devaluation, ensuring 1:1 collateral coverage per the CeR/CAU framework."@en ;
+    skos:broader semreg:0006030 ;
+.
