@@ -1,0 +1,103 @@
+# This action runs on merge to main.
+#
+# Workflow steps:
+# - checkout gh-pages for updating
+# - create joined vocabulary file in addition to split version
+# - create excel-file from turtle
+# - build pyLODE docs
+# - publish docs, vocabulary-turtle files and excel-file to gh-pages
+
+name: Merge & re-build
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'idranges.toml'
+      - '.zenodo.json'
+      - '.github/workflows/**.yml'
+      - 'templates/**.xlsx'
+      - 'vocabularies/**.ttl'
+  workflow_dispatch:
+
+env:
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
+  PIP_PROGRESS_BAR: "off"
+  LOGLEVEL: "DEBUG"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions: {}
+
+jobs:
+  build:
+    name: Development build of vocabulary & documentation
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Checkout gh-pages branch to dir publish/
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          ref: gh-pages
+          path: publish
+          fetch-depth: 1
+          persist-credentials: true
+
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
+        with:
+          python-version: '3.13'
+
+      - name: Install dependencies
+        run: |
+          python -VV
+          python -m pip install --upgrade pip setuptools wheel
+          python -m pip install git+https://github.com/nfdi4cat/voc4cat-tool.git@v1.0.4
+          python -m pip install git+https://github.com/dalito/pyLODE.git@nfdi4cat-2.x
+
+      - name: Set dynamic environment variables
+        run: |
+          echo "VOC4CAT_MODIFIED=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+          echo "VOC4CAT_VERSION=v_${GITHUB_SHA:0:8}" >> $GITHUB_ENV
+
+      - name: Run voc4cat (publish joined & split SKOS/turtle)
+        run: |
+          voc4cat --version
+          mkdir -p publish/dev/
+          find publish/dev/ -type f \( -name "*.xlsx" -o -name "*.ttl" \) -delete
+          cp -r vocabularies/. publish/dev/
+          voc4cat transform --join --config idranges.toml --logfile publish/dev/voc4cat.log publish/dev/
+
+      - name: Run voc4cat (build pyLODE HTML documentation)
+        run: |
+          voc4cat docs --force --logfile publish/dev/voc4cat.log publish/dev/
+          mv publish/dev/index.html publish/
+
+      - name: Run voc4cat (build current Excel file)
+        run: |
+          voc4cat convert --config idranges.toml --logfile publish/dev/voc4cat.log --template templates/default_sheets.xlsx publish/dev/
+
+      - name: Deploy updated gh-pages content
+        uses: peaceiris/actions-gh-pages@84c30a85c19949d7eee79c4ff27748b70285e453
+        if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
+        with:
+          publish_branch: gh-pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./publish
+          force_orphan: true
+
+      - name: Store publish dir as artifact
+        if: ${{ always() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: voc4cat-pages-dev-content
+          path: publish/
+          retention-days: 5

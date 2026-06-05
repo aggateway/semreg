@@ -1,0 +1,135 @@
+# ==== General Configuration ====
+# Documentation of the TOML format: https://toml.io/en/latest
+
+# Configuration format version (for future compatibility)
+config_version = "v1.0"
+
+# Allow only a single vocabulary (default) or multiple vocabularies in the repository.
+single_vocab = false
+
+# ==== Configuration for vocabulary "semreg" ====
+
+[vocabs.semreg]
+# Length of integer IDs in vocabulary. IDs will be left-padded with zeros to specified length.
+id_length = 7
+# permanent part of IRIs defined in the vocabulary (used to construct concept IRIs)
+permanent_iri_part = "https://w3id.org/aggateway/semreg/"
+
+# ==== ConceptScheme Metadata ====
+
+# MANDATORY: IRI for the vocabulary (skos:ConceptScheme)
+vocabulary_iri = "https://w3id.org/aggateway/semreg/"
+
+# Optional: Registered (or preferred) prefix for this vocabulary
+prefix = "semreg"
+
+# MANDATORY: Title of the vocabulary
+title = "AgGateway Semantic Registry"
+
+# MANDATORY: General description of the vocabulary
+description = "A SKOS vocabulary registry for AgGateway semantic interoperability standards."
+
+# MANDATORY: Date of creation (ISO-8601 format: YYYY-MM-DD)
+created_date = "2026-06-04"
+
+# MANDATORY: Creator(s) - multi-line text, each line: "<name> <orcid-URL or ror-URL>"
+creator = """
+AgGateway https://ror.org/00000000
+"""
+
+# MANDATORY: URL of repository or online vocabulary editor
+repository = "https://github.com/AgGateway/semreg"
+
+# ==== Checks Configuration ====
+[vocabs.semreg.checks]
+allow_delete = false
+
+# ==== Prefix Map ====
+[vocabs.semreg.prefix_map]
+semreg = "https://w3id.org/aggateway/semreg/"
+
+# ==== ID Ranges ====
+# first_id / last_id: reserved integer ID range
+# gh_name: GitHub user or org name
+# name: human-readable label for the contributor group
+
+[[vocabs.semreg.id_range]]
+first_id = 1000
+last_id = 1999
+gh_name = "AgGateway"
+name = "PLSS (Public Land Survey System)"
+orcid = ""
+ror_id = ""
+
+[[vocabs.semreg.id_range]]
+first_id = 2000
+last_id = 2999
+gh_name = "AgGateway"
+name = "WMO (World Meteorological Organization)"
+orcid = ""
+ror_id = ""
+
+[[vocabs.semreg.id_range]]
+first_id = 3000
+last_id = 3999
+gh_name = "AgGateway"
+name = "USDA"
+orcid = ""
+ror_id = ""
+
+[[vocabs.semreg.id_range]]
+first_id = 4000
+last_id = 4999
+gh_name = "AgGateway"
+name = "EPA"
+orcid = ""
+ror_id = ""
+
+[[vocabs.semreg.id_range]]
+first_id = 5000
+last_id = 5999
+gh_name = "AgGateway"
+name = "MODUS"
+orcid = ""
+ror_id = ""
+
+[[vocabs.semreg.id_range]]
+first_id = 6000
+last_id = 6999
+gh_name = "AgGateway"
+name = "WG35"
+orcid = ""
+ror_id = ""
+
+[[vocabs.semreg.id_range]]
+first_id = 7000
+last_id = 9999
+gh_name = "AgGateway"
+name = "Reserved"
+orcid = ""
+ror_id = ""
+
+[vocabs.databom-stewardship]
+id_length = 7
+permanent_iri_part = "https://w3id.org/aggateway/semreg/databom-stewardship_"
+vocabulary_iri = "https://w3id.org/aggateway/semreg/databom-stewardship/"
+prefix = "semreg"
+title = "DataBOM Stewardship Metadata"
+description = "Controlled vocabulary of stewardship metadata attributes for the ADAPT Standard DataBOM framework."
+created_date = "2026-06-04"
+creator = "P. Isaac Riley https://orcid.org/0000-0000-0000-0000"
+repository = "https://github.com/AgGateway/semreg"
+
+[vocabs.databom-stewardship.checks]
+allow_delete = false
+
+[vocabs.databom-stewardship.prefix_map]
+semreg = "https://w3id.org/aggateway/semreg/databom-stewardship_"
+
+[[vocabs.databom-stewardship.id_range]]
+first_id = 6000
+last_id = 6999
+gh_name = "AgGateway"
+name = "WG35 DataBOM Stewardship Metadata"
+orcid = ""
+ror_id = ""

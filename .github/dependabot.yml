@@ -1,0 +1,15 @@
+# Configures Dependabot to keep GitHub Actions versions current.
+# All updates are grouped into a single monthly PR.
+
+version: 2
+updates:
+- package-ecosystem: github-actions
+  directory: "/"
+  schedule:
+    interval: monthly
+  groups:
+    github-actions:
+      patterns:
+        - "*"
+
+# Ref: https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
